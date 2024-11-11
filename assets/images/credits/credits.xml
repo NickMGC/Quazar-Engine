@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="credits.png" width="126" height="126">
+	<SubTexture name="evilsk8r0000" x="2" y="62" width="63" height="62" rotated="true" frameX="4" frameY="6" frameWidth="63" frameHeight="63"/>
+	<SubTexture name="Kawai Sprite0000" x="67" y="62" width="49" height="60" rotated="true" frameX="4" frameY="-7" frameWidth="66" frameHeight="66"/>
+	<SubTexture name="ninjamuffin990000" x="76" y="2" width="48" height="53" rotated="true" frameX="5" frameY="-7" frameWidth="53" frameHeight="55"/>
+	<SubTexture name="Phantom Arcade0000" x="2" y="2" width="72" height="58" frameX="5" frameY="3" frameWidth="72" frameHeight="72"/>
+</TextureAtlas>

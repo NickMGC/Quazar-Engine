@@ -1,0 +1,15 @@
+{
+	"image": "DADDY_DEAREST",
+	"pos": [0, 0],
+
+	"singDuration": 6.1,
+	"healthColors": [175, 102, 206],
+
+	"anims": [
+		{"anim": "idle",      "name": "idle",  "fps": 24, "loop": false, "offsets": [0,   0]},
+		{"anim": "singLEFT",  "name": "left",  "fps": 24, "loop": false, "offsets": [-9, 10]},
+		{"anim": "singDOWN",  "name": "down",  "fps": 24, "loop": false, "offsets": [0, -30]},
+		{"anim": "singUP",    "name": "up",    "fps": 24, "loop": false, "offsets": [-6, 50]},
+		{"anim": "singRIGHT", "name": "right", "fps": 24, "loop": false, "offsets": [0,  27]}
+	]
+}

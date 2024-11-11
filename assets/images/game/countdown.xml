@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="countdown">
+	<SubTexture name="idle0000" x="2"    y="2" width="757" height="364"/>
+	<SubTexture name="idle0001" x="761"  y="2" width="702" height="322"/>
+	<SubTexture name="idle0002" x="1465" y="2" width="309" height="238"/>
+</TextureAtlas>
