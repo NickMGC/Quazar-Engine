@@ -19,7 +19,7 @@ import flixel.input.keyboard.FlxKey;
 	];
 
 	//Delay
-	static var offset = .0;
+	static var offset = 0;
 
 	//Graphics
 	static var antialiasing = true;

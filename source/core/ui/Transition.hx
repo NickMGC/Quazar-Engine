@@ -8,7 +8,7 @@ class Transition extends FlxSubState {
 
 		camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
 
-		final trans = new QuazarSpr('ui/transition');
+		final trans = new flixel.addons.display.FlxBackdrop(Path.image('images/ui/transition'), Y);
 		trans.scale.set(trans.scale.x / camera.zoom, trans.scale.y / camera.zoom);
 		trans.updateHitbox();
 		trans.scrollFactor.set();

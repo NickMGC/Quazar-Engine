@@ -104,8 +104,8 @@ class OptionsState extends MenuState {
         Key.onPress(Data.keyBinds['down'],  () -> changeItem(1));
         Key.onPress(Data.keyBinds['left'],  () -> updateValue(-1));
         Key.onPress(Data.keyBinds['right'], () -> updateValue(1));
-        Key.onHold (Data.keyBinds['left'],  () -> if(holdTime > 0.5) updateValue(-1, true));
-        Key.onHold (Data.keyBinds['right'], () -> if(holdTime > 0.5) updateValue(1,  true));
+        Key.onHold (Data.keyBinds['left'],  () -> if(holdTime > .5) updateValue(-1, true));
+        Key.onHold (Data.keyBinds['right'], () -> if(holdTime > .5) updateValue(1,  true));
         changeItem();
 
         super.create();

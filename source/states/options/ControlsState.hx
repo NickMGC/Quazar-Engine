@@ -109,6 +109,7 @@ class ControlsState extends MenuState {
                 optionGroup.members[curSelected].alpha = 1;
                 changed = false;
             } else {
+                Key.blockControls = true;
                 Settings.save();
                 MenuState.switchState(new OptionsState());
             }
