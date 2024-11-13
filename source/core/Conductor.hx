@@ -23,7 +23,7 @@ package core;
 
 		if (song?.playing && Math.abs(time - song.time) >= 25) time = song.time;
 
-		for (type in [timings.measure, timings.beat, timings.step]) if (Math.floor(type.last) != Math.floor(type.cur)) { //hxcpp unwraps small for loops so this isnt gonna allocate!
+		for (type in [timings.measure, timings.beat, timings.step]) if (Math.floor(type.last) != Math.floor(type.cur)) {
 			type.last = type.cur;
 			type.signal.dispatch();
 		}

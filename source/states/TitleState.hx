@@ -39,7 +39,7 @@ class TitleState extends BeatState {
 
         add(textGroup = new FlxTypedGroup());
 
-        for (obj in [logo, titleText, gf]) obj.kill(); //its a little slower but hxcpp still unwraps small for loops so it doesnt matter
+        for (obj in [logo, titleText, gf]) obj.kill();
         ngSpr.active = ngSpr.visible = false;
 
 		Key.onPress(Data.keyBinds['accept'], () -> skipIntro());
