@@ -21,20 +21,20 @@ class ControlsState extends MenuState {
     var defaultBind2:String;
 
     final options:Array<{?title:Title, ?keyBind:KeyBind}> = [ 
-        {title:   {name: 'Controls', center: true, add: 80}},
+        {title:   {name: 'Controls', add: 80}},
         {title:   {name: 'GAMEPLAY', add: 30, scale: .5}},
 
-        {keyBind: {name: 'Left',   variable: Data.keyBinds['note_left'], varName: 'note_left'}},
-        {keyBind: {name: 'Down',   variable: Data.keyBinds['note_down'], varName: 'note_down'}},
-        {keyBind: {name: 'Up',     variable: Data.keyBinds['note_up'], varName: 'note_up'}},
+        {keyBind: {name: 'Left',   variable: Data.keyBinds['note_left'],  varName: 'note_left'}},
+        {keyBind: {name: 'Down',   variable: Data.keyBinds['note_down'],  varName: 'note_down'}},
+        {keyBind: {name: 'Up',     variable: Data.keyBinds['note_up'],    varName: 'note_up'}},
         {keyBind: {name: 'Right',  variable: Data.keyBinds['note_right'], varName: 'note_right', add: 40}},
 
         {title:   {name: 'MENU NAVIGATION', add: 30, scale: .5}},
 
-        {keyBind: {name: 'Accept', variable: Data.keyBinds['accept'], varName: 'accept'}},
-        {keyBind: {name: 'Back',   variable: Data.keyBinds['back'], varName: 'back'}},
-        {keyBind: {name: 'Pause',  variable: Data.keyBinds['pause'], varName: 'pause'}},
-        {keyBind: {name: 'Reset',  variable: Data.keyBinds['reset'], varName: 'reset', add: 50}},
+        {keyBind: {name: 'Accept', variable: Data.keyBinds['accept'],     varName: 'accept'}},
+        {keyBind: {name: 'Back',   variable: Data.keyBinds['back'],       varName: 'back'}},
+        {keyBind: {name: 'Pause',  variable: Data.keyBinds['pause'],      varName: 'pause'}},
+        {keyBind: {name: 'Reset',  variable: Data.keyBinds['reset'],      varName: 'reset', add: 50}},
         {keyBind: {name: 'Test Inputs'}},
         {keyBind: {name: 'Reset Controls'}}
     ];
@@ -185,5 +185,5 @@ class ControlsState extends MenuState {
 
     inline function isTitle(num:Int):Bool return options[num].title != null;
 }
-typedef Title = {name:String, ?center:Bool, ?add:Float, ?scale:Float}
+typedef Title = {name:String, ?add:Float, ?scale:Float}
 typedef KeyBind = {name:String, ?variable:Array<FlxKey>, ?varName:String, ?add:Float, ?callback:Void -> Void}

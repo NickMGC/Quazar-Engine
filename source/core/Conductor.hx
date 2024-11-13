@@ -1,17 +1,8 @@
 package core;
 
-@:structInit @:publicFields class Timing {
-	var cur = .0;
-	var last = -1.;
-	var signal = new FlxSignal();
-
-	inline function new() {}
-}
-
 @:publicFields class Conductor extends FlxBasic {
-	static var measure:Timing = new Timing();
-	static var beat:Timing    = new Timing();
-	static var step:Timing    = new Timing();
+	private inline static function timing() return {cur: .0, last: -1., signal: new FlxSignal()};
+	static var timings = {measure: timing(), beat: timing(), step: timing()}; //anon structures are slow but this variable gets created once so it doesnt matter
 
 	static var song(default, set):FlxSound;
 
@@ -26,18 +17,17 @@ package core;
 		super.update(elapsed);
 		if (paused) return;
 
-		time += elapsed * 1000;
-		if (song?.playing && Math.abs(time - song.time) > 20) time = song.time;
+		timings.beat.cur = ((time += elapsed * 1000) - Data.offset) / (60000 / bpm);
+		timings.measure.cur = timings.beat.cur / 4;
+		timings.step.cur = timings.beat.cur * 4;
 
-		beat.cur = (time - Data.offset) / (60000 / bpm);
-		measure.cur = beat.cur * 4;
-		step.cur = beat.cur / 4;
+		if (song?.playing && Math.abs(time - song.time) >= 25) time = song.time;
 
-		for (type in [measure, beat, step]) if (Math.floor(type.last) != Math.floor(type.cur)) {
+		for (type in [timings.measure, timings.beat, timings.step]) if (Math.floor(type.last) != Math.floor(type.cur)) { //hxcpp unwraps small for loops so this isnt gonna allocate!
 			type.last = type.cur;
 			type.signal.dispatch();
 		}
 	}
 
-	@:noCompletion inline static function set_song(snd) return song = snd ?? FlxG.sound.music;
+	@:noCompletion private inline static function set_song(snd) return song = snd ?? FlxG.sound.music;
 }

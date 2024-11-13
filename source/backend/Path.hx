@@ -7,7 +7,6 @@ import flixel.system.FlxAssets;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
 
-import sys.io.File;
 import sys.FileSystem;
 
 @:keep @:publicFields class Path {
@@ -19,7 +18,6 @@ import sys.FileSystem;
 	static var trackedAudio:Map<String, Sound> = [];
 
 	static var exclusions:Array<String> = [
-		'assets/sounds/confirmMenu.ogg', 'assets/sounds/cancelMenu.ogg', 'assets/sounds/scrollMenu.ogg',
 		'assets/music/freakyMenu.ogg', 'assets/music/breakfast.ogg',
 		'assets/images/default.png', 'assets/images/default.fnt',
 		'assets/images/bold.png', 'assets/images/bold.fnt',
@@ -27,16 +25,11 @@ import sys.FileSystem;
 	];
 
 	static function get(key:String, ?pos:haxe.PosInfos) {
-		try {
-			if (!FileSystem.exists('assets/$key')) {
-				trace('$key could not be found: $pos');
-				return null;
-			}
-			return 'assets/$key';
-		} catch(e:Dynamic) {
-			trace('Error accessing $key: $e');
+		if (!FileSystem.exists('assets/$key')) {
+			trace('$key could not be found: $pos');
 			return null;
 		}
+		return 'assets/$key';
 	}
 
 	static function image(key:String) {
@@ -75,23 +68,18 @@ import sys.FileSystem;
 
 	inline static function sparrowAtlas(key:String) return FlxAtlasFrames.fromSparrow(image(key), xml(key));
 
-	inline static function getFileText(key:String) return FileSystem.exists(get(key)) ? File.getContent(get(key)) : null;
-	inline static function fileExists (key:String) return FileSystem.exists(get(key)) ? true : false;
+	inline static function fileExists(key:String) return FileSystem.exists(get(key)) ? true : false;
 
 	static function clearUnusedMemory() {
-		removeMapContent(trackedImages, (key) -> {
-			trackedImages[key].destroy();
-			FlxG.bitmap.remove(trackedImages[key]);
-		});
-
+		removeMapContent(trackedImages, (key) -> FlxG.bitmap.remove(trackedImages[key]));
 		removeMapContent(trackedAudio,  (key) -> openfl.Assets.cache.clear(key));
 
 		openfl.system.System.gc();
 	}
 
 	static function clearStoredMemory() {
-		clearUnusedMemory();
 		localAssets = [];
+		clearUnusedMemory();
 	}
 
 	@:noCompletion static function removeMapContent(map:Map<Any, Any>, callback:String -> Void) {

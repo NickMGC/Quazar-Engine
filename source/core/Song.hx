@@ -2,22 +2,11 @@ package core;
 
 //temporary code, subject to change
 
-@:structInit @:publicFields class SongInfo {
-    var name = '';
+typedef NoteData = Array<{time:Float, index:Int, ?length:Float, ?type:String}>;
+typedef EventData = Array<{time:Float, data:Array<{name:String, values:Array<Dynamic>}>}>;
 
-    var bpm = 100.;
-    var speed = 1.;
-
-    var player1 = 'bf';
-    var player2 = 'dad';
-    var player3 = 'gf';
-
-    var notes:Array<{time:Float, index:Int, ?length:Float, ?type:String}> = [];
-    var events:Array<{time:Float, data:Array<{name:String, values:Array<Dynamic>}>}> = [];
-
-    inline function new() {}
-}
+typedef Chart = {name:String, bpm:Float, speed:Float, player1:String, player2:String, player3:String, notes:NoteData, events:EventData}
 
 @:publicFields class Song {
-    var song:SongInfo = new SongInfo();
+    var song:Chart;
 }

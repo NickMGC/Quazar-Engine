@@ -1,6 +1,10 @@
 ### VS Code
 export/*
 tools/*
+
+### teehee
+docs/*
+
 .vscode/*
 .haxelib/
 .github/

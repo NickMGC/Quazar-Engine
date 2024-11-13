@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="bf.png">
+	<SubTexture name="idle0000" x="1274" y="458" width="422" height="452" frameX="0" frameY="-6" frameWidth="422" frameHeight="458" rotated="false"/>
+	<SubTexture name="idle0001" x="1274" y="458" width="422" height="452" frameX="0" frameY="-6" frameWidth="422" frameHeight="458" rotated="false"/>
+	<SubTexture name="idle0002" x="1274" y="2" width="422" height="454" frameX="0" frameY="-4" frameWidth="422" frameHeight="458" rotated="false"/>
+	<SubTexture name="idle0003" x="1274" y="2" width="422" height="454" frameX="0" frameY="-4" frameWidth="422" frameHeight="458" rotated="false"/>
+	<SubTexture name="idle0004" x="2" y="2" width="422" height="458"/>
+	<SubTexture name="idle0005" x="2" y="2" width="422" height="458"/>
+	<SubTexture name="idle0006" x="2" y="462" width="422" height="458"/>
+	<SubTexture name="idle0007" x="2" y="462" width="422" height="458"/>
+	<SubTexture name="idle0008" x="426" y="2" width="422" height="458"/>
+	<SubTexture name="idle0009" x="426" y="2" width="422" height="458"/>
+	<SubTexture name="idle0010" x="426" y="462" width="422" height="458"/>
+	<SubTexture name="idle0011" x="426" y="462" width="422" height="458"/>
+	<SubTexture name="idle0012" x="850" y="2" width="422" height="458"/>
+	<SubTexture name="idle0013" x="850" y="2" width="422" height="458"/>
+</TextureAtlas>

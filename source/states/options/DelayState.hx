@@ -4,13 +4,30 @@ class DelayState extends BeatState {
     var holdTime = .0;
 
     var delayText:FlxText;
+
+    var bf:QuazarSpr;
+
+    var objects:Array<{name:String, pos:Array<Float>}> = [
+        {name: 'stageback', pos: [-300, -100]}, {name: 'stagefront', pos: [-230, 500]},
+        {name: 'stage_light', pos: [125, 20]}, {name: 'stage_light', pos: [1025, 20]}, {name: 'stagecurtains', pos: [-230, -100]}
+    ];
+
     override function create() {
         Conductor.bpm = 80;
 
-        FlxG.sound.playMusic(Path.music('songOffset'), .0);
-        FlxG.sound.music.fadeIn(.1, 0, .5);
+        FlxG.sound.playMusic(Path.music('songOffset'), .5);
 
-        add(new QuazarSpr('options/delay'));
+        for (i in 0...objects.length) {
+            final prop = new QuazarSpr('stage/${objects[i].name}', objects[i].pos[0], objects[i].pos[1], 'stages');
+            if (objects[i].pos[0] == 1025) prop.flipX = true; //hacky but it works, ill draw a proper bg later so it doesnt matter if the code is garbage rn 🤷
+            prop.scale.set(0.7, 0.7);
+            prop.updateHitbox();
+            add(prop);
+        }
+
+        add(bf = new QuazarSpr('options/bf', 429, 282, [{name: 'idle', prefix: 'idle', fps: 24}]));
+        bf.animation.play('idle');
+        bf.animation.finish();
 
         Key.onPress(Data.keyBinds['back'], () -> {
             Key.blockControls = true;
@@ -25,8 +42,7 @@ class DelayState extends BeatState {
         Key.onHold   (Data.keyBinds['left'],  () -> if(holdTime > .5) updateOffset(-1));
         Key.onHold   (Data.keyBinds['right'], () -> if(holdTime > .5) updateOffset(1));
 
-        add(delayText = new FlxText(0, 30, 0, '${Data.offset}').setFormat(Path.font('FallingSkyBlk.otf'), 32, FlxColor.BLACK, CENTER));
-        delayText.screenCenter(X);
+        add(delayText = new FlxText(0, 30, 1280, '${Data.offset}').setFormat(Path.font('FallingSkyBlk.otf'), 32, FlxColor.WHITE, CENTER));
 
         super.create();
     }
@@ -34,30 +50,26 @@ class DelayState extends BeatState {
     var mult = 1.;
     function updateOffset(huh = 0) {
         if (huh != 0) {
-            Data.offset = Std.int(Math.max(-500, Math.min(Data.offset + (huh == -1 ? -1 : 1) * mult, 500)));
+            delayText.text = '${Data.offset = Std.int(Math.max(-500, Math.min(Data.offset + (huh == -1 ? -1 : 1) * mult, 500)))}';
+            mult = holdTime > .5 ? 2 : 1;
 
-            if(holdTime > .5) 
-                mult = 2;
-            else {
-                mult = 1;  
-                FlxG.sound.play(Path.sound('scrollMenu'), .4);
-                holdTime = 0;
-            }
-
-            delayText.text = '${Data.offset}';
+            FlxG.sound.play(Path.sound('scrollMenu'), .4);
         }
     }
 
     override function update(elapsed:Float) {
         super.update(elapsed);
-
         if (FlxG.keys.anyPressed(Data.keyBinds['left']) || FlxG.keys.anyPressed(Data.keyBinds['right'])) holdTime += elapsed;
     }
 
     var camTween:FlxTween;
     override function onBeat() {
-        if (camTween != null) camTween.cancel();
-        camTween = FlxTween.num(1.05, 1, 0.3, {ease: FlxEase.expoOut}, (v) -> FlxG.camera.zoom = v);
+        if (curBeat % 2 == 0) {
+            if (camTween != null) camTween.cancel();
+            camTween = FlxTween.num(1.05, 1, 1, {ease: FlxEase.expoOut}, (v) -> FlxG.camera.zoom = v);
+        }
+
+        bf.animation.play('idle', true);
 
         super.onBeat();
     }

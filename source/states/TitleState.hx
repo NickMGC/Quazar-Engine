@@ -62,7 +62,7 @@ class TitleState extends BeatState {
 
     override function onBeat() {
         gf.animation.play(curBeat % 2 == 0 ? 'left' : 'right', true);
-		logo.animation.play('bump', true);
+        logo.animation.play('bump', true);
 
 		if (!skippedIntro) {
 			ngSpr.visible = curBeat == 7;
@@ -81,8 +81,6 @@ class TitleState extends BeatState {
 				case 16: skipIntro();
 			}
 		}
-
-        //FlxG.sound.play(Path.sound('tick'));
 
         super.onBeat();
     }
