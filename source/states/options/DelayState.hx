@@ -12,18 +12,22 @@ class DelayState extends BeatState {
         {name: 'stage_light', pos: [125, 20]}, {name: 'stage_light', pos: [1025, 20]}, {name: 'stagecurtains', pos: [-230, -100]}
     ];
 
+    var props:FlxTypedSpriteGroup<QuazarSpr>;
+
     override function create() {
         Conductor.bpm = 80;
 
         FlxG.sound.playMusic(Path.music('songOffset'), .5);
 
+        add(props = new FlxTypedSpriteGroup());
         for (i in 0...objects.length) {
             final prop = new QuazarSpr('stage/${objects[i].name}', objects[i].pos[0], objects[i].pos[1], 'stages');
-            if (objects[i].pos[0] == 1025) prop.flipX = true; //hacky but it works, ill draw a proper bg later so it doesnt matter if the code is garbage rn 🤷
             prop.scale.set(0.7, 0.7);
             prop.updateHitbox();
-            add(prop);
+            props.add(prop);
         }
+
+        props.members[3].flipX = true;
 
         add(bf = new QuazarSpr('options/bf', 429, 282, [{name: 'idle', prefix: 'idle', fps: 24}]));
         bf.animation.play('idle');

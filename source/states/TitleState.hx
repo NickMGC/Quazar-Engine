@@ -43,8 +43,6 @@ class TitleState extends BeatState {
         ngSpr.active = ngSpr.visible = false;
 
 		Key.onPress(Data.keyBinds['accept'], () -> skipIntro());
-
-		Path.clearUnusedMemory();
     }
 
     var titleTimer = .0;
