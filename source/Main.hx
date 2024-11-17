@@ -10,8 +10,8 @@ class Main extends flixel.FlxGame {
 	}
 
 	#if !debug
-	@:noCompletion override function __hitTest       (x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject) return false;
+	@:noCompletion override function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject) return false;
     @:noCompletion override function __hitTestHitArea(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject) return false;
-    @:noCompletion override function __hitTestMask   (x:Float, y:Float) return false;
+    @:noCompletion override function __hitTestMask(x:Float, y:Float) return false;
 	#end
 }

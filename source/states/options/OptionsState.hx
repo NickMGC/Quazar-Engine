@@ -5,7 +5,7 @@ import objects.Option;
 
 class OptionsState extends MenuState {
     static var curSelected = 1;
-    private var curOption:Option = null;
+    var curOption:Option = null;
 
     final options:Array<{?option:Option, ?title:String, ?state:Class<FlxState>, ?add:Float}> = [ 
         {title: 'Gameplay Settings', add: 50},
@@ -21,7 +21,7 @@ class OptionsState extends MenuState {
         {option: new Option('Anti-Aliasing',         'Anti-Aliasing is used to make graphics look less pixelated.',     'antialiasing')},
         {option: new Option('GPU Rendering',         'Puts the workload on the GPU when rendering graphics.',           'gpuRendering')},
         {option: new Option('Shaders',               'Shaders are used for various visual effects.',                    'shaders')},
-        {option: new Option('Show Debug statistics', "Shows debug stats, there's not much else that can be said.",      'showFPS')}
+        {option: new Option('Show Debug statistics', "Shows debug statistics like Framerate and Memory.",               'showFPS')}
     ];
 
     var groups = {text: new FlxTypedSpriteGroup<Alphabet>(), options: new FlxTypedSpriteGroup<Alphabet>(), checkboxes: new FlxTypedSpriteGroup<Checkbox>(), lines: new FlxTypedSpriteGroup<FlxSprite>()};
@@ -31,7 +31,7 @@ class OptionsState extends MenuState {
     var desc:Alphabet;
     var bgClipped:QuazarSpr;
 
-    function leBG() { //im very good at naming functions trust trust
+    function background() {
         var bg = new QuazarSpr('menuDesat');
         bg.color = 0xFFea71fd;
         bg.scrollFactor.set();
@@ -41,11 +41,11 @@ class OptionsState extends MenuState {
     override function create() {
         if (!FlxG.sound.music?.playing) FlxG.sound.playMusic(Path.music('freakyMenu'), .5);
 
-        add(leBG());
+        add(background());
 
         for (group in [groups.text, groups.options, groups.checkboxes, groups.lines]) add(group);
 
-        add(bgClipped = leBG());
+        add(bgClipped = background());
         bgClipped.clipRect = new flixel.math.FlxRect(0, 630, 1280, 90);
 
         add(desc = new Alphabet(0, 650, '', .7, false, CENTER));
@@ -76,39 +76,52 @@ class OptionsState extends MenuState {
             groups.text.add(option);
         }
 
-        Key.onPress(Data.keyBinds['back'], () -> {
-            Settings.save();
-            Settings.load();
+        Key.onPress(Data.keyBinds['back'],   onBack);
+        Key.onPress(Data.keyBinds['accept'], onAccept);
 
-            Key.blockControls = true;
-            FlxG.sound.play(Path.sound('cancelMenu'), .6);
-            MenuState.switchState(new states.MainMenuState());
-        });
+        Key.onPress(Data.keyBinds['up'],     onUp);
+        Key.onPress(Data.keyBinds['down'],   onDown);
 
-        Key.onPress(Data.keyBinds['accept'], () -> {
-            if (curOption.type == 'bool') {
-                FlxG.sound.play(Path.sound('scrollMenu'), .4);
+        Key.onPress(Data.keyBinds['left'],   onLeftPress);
+        Key.onPress(Data.keyBinds['right'],  onRightPress);
 
-                curOption.setValue((curOption.getValue() == true) ? false : true);
-                updateCheckbox();
-            }
-
-            if (options[curSelected].state != null) {
-                Key.blockControls = true;
-                MenuState.switchState(Type.createInstance(options[curSelected].state, []));
-            }
-        });
-
-        //wish there was a less eye-sorey way of doing this...
-        Key.onPress(Data.keyBinds['up'],    () -> changeItem(-1));
-        Key.onPress(Data.keyBinds['down'],  () -> changeItem(1));
-        Key.onPress(Data.keyBinds['left'],  () -> updateValue(-1));
-        Key.onPress(Data.keyBinds['right'], () -> updateValue(1));
-        Key.onHold (Data.keyBinds['left'],  () -> if(holdTime > .5) updateValue(-1, true));
-        Key.onHold (Data.keyBinds['right'], () -> if(holdTime > .5) updateValue(1,  true));
+        Key.onHold (Data.keyBinds['left'],   onLeftHold);
+        Key.onHold (Data.keyBinds['right'],  onRightHold);
         changeItem();
 
         super.create();
+    }
+
+    inline function onUp()   changeItem(-1);
+    inline function onDown() changeItem(1);
+
+    inline function onLeftPress()  updateValue(-1);
+    inline function onRightPress() updateValue(1);
+
+    inline function onLeftHold()  if(holdTime > .5) updateValue(-1, true);
+    inline function onRightHold() if(holdTime > .5) updateValue(1, true);
+
+    function onBack() {
+        Settings.save();
+        Settings.load();
+
+        Key.blockControls = true;
+        FlxG.sound.play(Path.sound('cancelMenu'), .6);
+        MenuState.switchState(new states.MainMenuState());
+    }
+
+    function onAccept() {
+        if (curOption.type == 'bool') {
+            FlxG.sound.play(Path.sound('scrollMenu'), .4);
+
+            curOption.setValue((curOption.getValue() == true) ? false : true);
+            updateCheckbox();
+        }
+
+        if (options[curSelected].state != null) {
+            Key.blockControls = true;
+            MenuState.switchState(Type.createInstance(options[curSelected].state, []));
+        }
     }
 
     inline function updateCheckbox() for (checkbox in groups.checkboxes.members) if (checkbox != null && checkbox.ID == curSelected) checkbox.animation.play('${curOption.getValue() == true ? '' : 'un'}checked');
@@ -144,6 +157,7 @@ class OptionsState extends MenuState {
 
         if (huh != 0) {
             if (curOption.type == 'string') curOption.curOption = ((curOption.curOption + (huh == -1 ? -1 : 1)) + curOption.options.length) % curOption.options.length;
+
             curOption.setValue(curOption.type == 'string' ? curOption.options[curOption.curOption] : updateTypes(huh));
             updateText(curOption);
             curOption.change();

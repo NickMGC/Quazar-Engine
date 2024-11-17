@@ -17,18 +17,22 @@ class MainMenuState extends MenuState {
             menuItems.add(new QuazarSpr('mainmenu/buttons', 0, (i * 140) + 90, animInfo)).screenCenter(X);
         }
 
-        Key.onPress(Data.keyBinds['accept'], () -> {
-            Key.blockControls = true;
-
-            FlxG.sound.play(Path.sound('confirmMenu'), .7);
-            flixel.effects.FlxFlicker.flicker(menuItems.members[curSelected], 1, .06, false, false, (_) ->  MenuState.switchState(Type.createInstance(options[curSelected].state, [])));
-        });
-
-        Key.onPress(Data.keyBinds['up'],   () -> changeItem(-1));
-        Key.onPress(Data.keyBinds['down'], () -> changeItem(1));
+        Key.onPress(Data.keyBinds['accept'], onAccept);
+        Key.onPress(Data.keyBinds['up'],     onUp);
+        Key.onPress(Data.keyBinds['down'],   onDown);
         changeItem();
 
         super.create();
+    }
+
+    inline function onUp()   changeItem(-1);
+    inline function onDown() changeItem(1);
+
+    function onAccept() {
+        Key.blockControls = true;
+
+        FlxG.sound.play(Path.sound('confirmMenu'), .7);
+        flixel.effects.FlxFlicker.flicker(menuItems.members[curSelected], 1, .06, false, false, (_) -> MenuState.switchState(Type.createInstance(options[curSelected].state, [])));
     }
 
     function changeItem(huh = 0) {
@@ -37,8 +41,13 @@ class MainMenuState extends MenuState {
         curSelected = (curSelected + huh + menuItems.length) % menuItems.length;
 
         for (i => item in menuItems.members) {
-            item.animation.play(i == curSelected ? 'select' : 'idle');
-            i == curSelected ? item.centerOffsets() : item.updateHitbox();
+            if (i == curSelected) {
+                item.animation.play('select');
+                item.centerOffsets();
+            } else {
+                item.animation.play('idle');
+                item.updateHitbox();
+            }
             item.screenCenter(X);
         }
     }

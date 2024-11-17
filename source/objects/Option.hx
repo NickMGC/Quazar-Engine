@@ -1,6 +1,7 @@
 package objects;
 
 //taken from psych because my monkey brain doesnt know how to make it any better
+//todo: figure out how to do this without yoinking from psych
 @:publicFields class Option {
 	public var child:Alphabet;
 	public var text(get, set):String;

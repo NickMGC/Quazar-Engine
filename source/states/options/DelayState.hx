@@ -33,22 +33,34 @@ class DelayState extends BeatState {
         bf.animation.play('idle');
         bf.animation.finish();
 
-        Key.onPress(Data.keyBinds['back'], () -> {
-            Key.blockControls = true;
-            MenuState.switchState(new OptionsState());
-            FlxG.sound.music.stop();
-        });
+        Key.onPress(Data.keyBinds['back'], onBack);
 
-        Key.onRelease(Data.keyBinds['left'],  () -> holdTime = 0);
-        Key.onRelease(Data.keyBinds['right'], () -> holdTime = 0);
-        Key.onPress  (Data.keyBinds['left'],  () -> updateOffset(-1));
-        Key.onPress  (Data.keyBinds['right'], () -> updateOffset(1));
-        Key.onHold   (Data.keyBinds['left'],  () -> if(holdTime > .5) updateOffset(-1));
-        Key.onHold   (Data.keyBinds['right'], () -> if(holdTime > .5) updateOffset(1));
+        Key.onRelease(Data.keyBinds['left'], resetHold);
+        Key.onRelease(Data.keyBinds['right'], resetHold);
+
+        Key.onPress(Data.keyBinds['left'], onLeftPress);
+        Key.onPress(Data.keyBinds['right'], onRightPress);
+
+        Key.onHold(Data.keyBinds['left'], onLeftHold);
+        Key.onHold(Data.keyBinds['right'], onRightHold);
 
         add(delayText = new FlxText(0, 30, 1280, '${Data.offset}').setFormat(Path.font('FallingSkyBlk.otf'), 32, FlxColor.WHITE, CENTER));
 
         super.create();
+    }
+
+    inline function onLeftPress() updateOffset(-1);
+    inline function onRightPress() updateOffset(1);
+
+    inline function onLeftHold() if(holdTime > .5) updateOffset(-1);
+    inline function onRightHold() if(holdTime > .5) updateOffset(1);
+
+    inline function resetHold() holdTime = 0;
+
+    function onBack() {
+        Key.blockControls = true;
+        MenuState.switchState(new OptionsState());
+        FlxG.sound.music.stop();
     }
 
     var mult = 1.;

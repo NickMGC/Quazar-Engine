@@ -29,7 +29,7 @@ import core.Song;
 //Objects
 import objects.Alphabet;
 import objects.QuazarSpr;
-
+import objects.core.Sustain;
 
 //Flixel
 import flixel.sound.*;

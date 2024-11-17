@@ -6,7 +6,7 @@ package core.ui;
 
 		if(!FlxTransitionableState.skipNextTransOut) {
 			FlxG.state.openSubState(new Transition());
-			Transition.finish = () -> closeSubState();
+			Transition.finish = closeSubState;
 		}
 
 		Key.blockControls = false;
@@ -37,8 +37,10 @@ package core.ui;
 	static function startTransition(?nextState:FlxState) {
 		if(nextState == null) return;
 
+		function stateChange() nextState == FlxG.state ? FlxG.resetState() : FlxG.switchState(nextState);
+
 		FlxG.state.openSubState(new Transition(true));
-		Transition.finish = () -> nextState == FlxG.state ? FlxG.resetState() : FlxG.switchState(nextState);
+		Transition.finish = stateChange;
 	}
 
 	static function getState():MenuState return cast FlxG.state;

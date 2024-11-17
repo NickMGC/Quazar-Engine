@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextureAtlas imagePath="splashes.png">
+	<!-- Left -->
+	<SubTexture name="left 10000"  x="1257" y="987"  width="189" height="270" frameX="-32"   frameY="-12" frameWidth="260" frameHeight="298"/>
+	<SubTexture name="left 10001"  x="536"  y="1044" width="265" height="213" rotated="true" frameX="-27" frameY="-22"     frameWidth="260" frameHeight="298"/>
+	<SubTexture name="left 10002"  x="2"    y="564"  width="291" height="252" rotated="true" frameX="-4"  frameY="-6"      frameWidth="260" frameHeight="298"/>
+	<SubTexture name="left 10003"  x="264"  y="2"    width="260" height="298" frameX="-0"    frameY="-0"  frameWidth="260" frameHeight="298"/>
+
+	<SubTexture name="left 20000"  x="1257" y="1259" width="169" height="201" frameX="-45"   frameY="-41" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="left 20001"  x="1030" y="1044" width="225" height="238" frameX="-20"   frameY="-19" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="left 20002"  x="780"  y="2"    width="257" height="265" rotated="true" frameX="-0"  frameY="-10"     frameWidth="274" frameHeight="267"/>
+	<SubTexture name="left 20003"  x="869"  y="269"  width="224" height="258" frameX="-50"   frameY="-0"  frameWidth="274" frameHeight="267"/>
+
+	<!-- Down -->
+	<SubTexture name="down 10000"  x="1056" y="796"  width="270" height="189" rotated="true" frameX="-32" frameY="-12"     frameWidth="260" frameHeight="298"/>
+	<SubTexture name="down 10001"  x="881"  y="529"  width="213" height="265" frameX="-27"   frameY="-22" frameWidth="260" frameHeight="298"/>
+	<SubTexture name="down 10002"  x="526"  y="2"    width="252" height="291" frameX="-4"    frameY="-6"  frameWidth="260" frameHeight="298"/>
+	<SubTexture name="down 10003"  x="2"    y="2"    width="260" height="298" frameX="-0"    frameY="-0"  frameWidth="260" frameHeight="298"/>
+
+	<SubTexture name="down 20000"  x="1322" y="242"  width="169" height="201" frameX="-45"   frameY="-41" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="down 20001"  x="803"  y="1044" width="225" height="238" frameX="-20"   frameY="-19" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="down 20002"  x="602"  y="295"  width="265" height="257" frameX="-0"    frameY="-10" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="down 20003"  x="536"  y="818"  width="258" height="224" rotated="true" frameX="-50" frameY="-0"      frameWidth="274" frameHeight="267"/>
+
+	<!-- Up -->
+	<SubTexture name="up 10000"    x="1287" y="502"  width="189" height="270" frameX="-32"   frameY="-12" frameWidth="260" frameHeight="298"/>
+	<SubTexture name="up 10001"    x="269"  y="1077" width="265" height="213" rotated="true" frameX="-27" frameY="-22"     frameWidth="260" frameHeight="298"/>
+	<SubTexture name="up 10002"    x="588"  y="564"  width="291" height="252" rotated="true" frameX="-4"  frameY="-6"      frameWidth="260" frameHeight="298"/>
+	<SubTexture name="up 10003"    x="302"  y="302"  width="298" height="260" rotated="true" frameX="-0"  frameY="-0"      frameWidth="260" frameHeight="298"/>
+
+	<SubTexture name="up 20000"    x="2"    y="1292" width="201" height="169" rotated="true" frameX="-45" frameY="-41"     frameWidth="274" frameHeight="267"/>
+	<SubTexture name="up 20001"    x="1265" y="2"    width="225" height="238" frameX="-20"   frameY="-19" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="up 20002"    x="269"  y="818"  width="265" height="257" frameX="-0"    frameY="-10" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="up 20003"    x="796"  y="818"  width="258" height="224" rotated="true" frameX="-50" frameY="-0"      frameWidth="274" frameHeight="267"/>
+
+	<!-- Right -->
+	<SubTexture name="right 10000" x="1096" y="502"  width="189" height="270" frameX="-32"   frameY="-12" frameWidth="260" frameHeight="298"/>
+	<SubTexture name="right 10001" x="2"    y="1077" width="265" height="213" rotated="true" frameX="-27" frameY="-22"     frameWidth="260" frameHeight="298"/>
+	<SubTexture name="right 10002" x="295"  y="564"  width="291" height="252" rotated="true" frameX="-4"  frameY="-6"      frameWidth="260" frameHeight="298"/>
+	<SubTexture name="right 10003" x="2"    y="302"  width="298" height="260" rotated="true" frameX="-0"  frameY="-0"      frameWidth="260" frameHeight="298"/>
+
+	<SubTexture name="right 20000" x="536"  y="1259" width="169" height="201" frameX="-45"   frameY="-41" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="right 20001" x="1095" y="262"  width="225" height="238" frameX="-20"   frameY="-19" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="right 20002" x="2"    y="818"  width="265" height="257" frameX="-0"    frameY="-10" frameWidth="274" frameHeight="267"/>
+	<SubTexture name="right 20003" x="1039" y="2"    width="224" height="258" frameX="-50"   frameY="-0"  frameWidth="274" frameHeight="267"/>
+</TextureAtlas>

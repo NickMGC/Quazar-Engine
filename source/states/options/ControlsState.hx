@@ -11,7 +11,7 @@ class ControlsState extends MenuState {
 
     var state = {binding: false, firstBind: true, waitTimer: 0.1, holdTime: 0.0, defaultBinds: null, tempBind1: null}; //sexy state array (im addicted to condensed code help)
 
-    static final options:Array<{name:String, type:String, ?varName:String, ?add:Float, ?scale:Float, ?callback:() -> Void}> = [
+    static final options:Array<{name:String, type:String, ?varName:String, ?add:Float, ?scale:Float, ?callback:Void -> Void}> = [
         {name: 'Controls',        add: 80,      type: 'title',   scale: .8},
         {name: 'Gameplay',        add: 30,      type: 'title',   scale: .5},
 
@@ -28,7 +28,7 @@ class ControlsState extends MenuState {
         {name: 'Reset',  varName: 'reset',      type: 'keybind', add: 50},
 
         {name: 'Test Inputs',    callback: null,                  type: 'action'},
-        {name: 'Reset Controls', callback: () -> resetControls(), type: 'action'}
+        {name: 'Reset Controls', callback: resetControls,         type: 'action'}
     ];
 
     override function create() {
@@ -58,42 +58,45 @@ class ControlsState extends MenuState {
         optionGroup.members[0].screenCenter(X);
         optionGroup.members[11].x = optionGroup.members[12].x = 100;
 
-        Key.onPress(Data.keyBinds['up'],   () -> if (!state.binding) changeItem(-1));
-        Key.onPress(Data.keyBinds['down'], () -> if (!state.binding) changeItem(1));
+        Key.onPress(Data.keyBinds['accept'], onAccept);
+        Key.onPress(Data.keyBinds['back'],   onBack);
+        Key.onPress(Data.keyBinds['up'],     onUp);
+        Key.onPress(Data.keyBinds['down'],   onUp);
         changeItem();
 
-        Key.onPress(Data.keyBinds['accept'], () -> {
-            if (!state.binding) {
-                var option = options[curSelected];
-
-                if (option.type != 'title') {
-                    FlxG.sound.play(Path.sound('scrollMenu'), .4);
-        
-                    if (option.type == 'keybind') {
-                        state.binding = state.firstBind = true;
-                        state.waitTimer = .1;
-                        state.holdTime = 0;
-        
-                        state.defaultBinds = [Data.keyBinds[option.varName][1], Data.keyBinds[option.varName][0]];
-        
-                        updateBind('_', KeyFormat.display(state.defaultBinds[0]));
-                        optionGroup.members[curSelected].alpha = .6;
-        
-                    } else if (option.type == 'action' && option.callback != null) option.callback();
-                }
-            }
-        });
-
-        Key.onPress(Data.keyBinds['back'],   () -> {
-            if (!state.binding) {
-                Key.blockControls = true;
-                Settings.save();
-                MenuState.switchState(new OptionsState());
-                FlxG.sound.play(Path.sound('cancelMenu'), .6);
-            }
-        });
-
         super.create();
+    }
+
+    inline function onUp()   if (!state.binding) changeItem(-1);
+    inline function onDown() if (!state.binding) changeItem(1);
+
+    function onBack() {
+        if (state.binding) return;
+
+        Key.blockControls = true;
+        Settings.save();
+        MenuState.switchState(new OptionsState());
+        FlxG.sound.play(Path.sound('cancelMenu'), .6);
+    }
+
+    function onAccept() {
+        if (state.binding || options[curSelected].type == 'title') return;
+
+        var option = options[curSelected];
+
+        FlxG.sound.play(Path.sound('scrollMenu'), .4);
+
+        if (option.type == 'keybind') {
+            state.binding = state.firstBind = true;
+            state.waitTimer = .1;
+            state.holdTime = 0;
+
+            state.defaultBinds = [Data.keyBinds[option.varName][1], Data.keyBinds[option.varName][0]];
+
+            updateBind('_', KeyFormat.display(state.defaultBinds[0]));
+            optionGroup.members[curSelected].alpha = .6;
+
+        } else if (option.type == 'action' && option.callback != null) option.callback();
     }
 
     function formatBindText(bind1:FlxKey, bind2:FlxKey):String return '[${formatBinds(bind1 != NONE ? bind1.toString() : null, bind2.toString())}]';
@@ -104,12 +107,11 @@ class ControlsState extends MenuState {
         if (!state.binding) return;
 
         state.waitTimer -= elapsed;
+
         if (state.waitTimer <= 0) {
-            if (FlxG.keys.justPressed.ANY) {
-                if (FlxG.keys.firstJustPressed() > -1) {
-                    bind(FlxG.keys.firstJustPressed());
-                    return;
-                }
+            if (FlxG.keys.justPressed.ANY && FlxG.keys.firstJustPressed() > -1) {
+                bind(FlxG.keys.firstJustPressed());
+                return;
             }
 
             if (FlxG.keys.pressed.ESCAPE || FlxG.keys.pressed.BACKSPACE) {

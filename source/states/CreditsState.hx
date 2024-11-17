@@ -37,24 +37,30 @@ class CreditsState extends MenuState {
                 icon.active = false;
                 icon.animation.play(credits[i].name);
                 add(icon);
-            } else add(new FlxSprite(Std.int(credit.x + credit.width + 19), credit.y + 20).makeGraphic(Std.int(1190 - (credit.x + credit.width + 18)), 4, FlxColor.BLACK));
+            } else 
+                add(new FlxSprite(Std.int(credit.x + credit.width + 19), credit.y + 20).makeGraphic(Std.int(1190 - (credit.x + credit.width + 18)), 4, FlxColor.BLACK));
         }
 
         add(desc = new Alphabet(30, 650, credits[curSelected].desc, .7, false));
 
-        Key.onPress(Data.keyBinds['accept'], () -> FlxG.openURL('x.com/${credits[curSelected].link}'));
-
-        Key.onPress(Data.keyBinds['back'], () -> {
-            Key.blockControls = true;
-            FlxG.sound.play(Path.sound('cancelMenu'), .6);
-            MenuState.switchState(new MainMenuState());
-        });
-
-        Key.onPress(Data.keyBinds['up'],   () -> changeItem(-1));
-        Key.onPress(Data.keyBinds['down'], () -> changeItem(1));
+        Key.onPress(Data.keyBinds['accept'], openLink);
+        Key.onPress(Data.keyBinds['back'],   onBack);
+        Key.onPress(Data.keyBinds['up'],     onUp);
+        Key.onPress(Data.keyBinds['down'],   onDown);
         changeItem();
 
         super.create();
+    }
+
+    inline function onUp()   changeItem(-1);
+    inline function onDown() changeItem(1);
+
+    inline function openLink() FlxG.openURL('x.com/${credits[curSelected].link}');
+
+    function onBack() {
+        Key.blockControls = true;
+        FlxG.sound.play(Path.sound('cancelMenu'), .6);
+        MenuState.switchState(new MainMenuState());
     }
 
     function changeItem(huh = 0) {
@@ -63,7 +69,6 @@ class CreditsState extends MenuState {
         if (huh != 0) FlxG.sound.play(Path.sound('scrollMenu'), .4);
 
         for (i => credit in devs.members) if (!credit.bold) credit.alpha = i == curSelected ? 1 : .6;
-
         desc.text = credits[curSelected].desc;
     }
 

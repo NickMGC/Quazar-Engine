@@ -1,14 +1,16 @@
 package core;
 
 @:publicFields class Conductor extends FlxBasic {
-	static var timings = {measure: {cur: .0, last: -1., signal: new FlxSignal()}, beat: {cur: .0, last: -1., signal: new FlxSignal()}, step: {cur: .0, last: -1., signal: new FlxSignal()}};
 	static var song(default, set):FlxSound;
+	static var timings = {measure: {cur: .0, last: -1., signal: new FlxSignal()}, beat: {cur: .0, last: -1., signal: new FlxSignal()}, step: {cur: .0, last: -1., signal: new FlxSignal()}};
+
+	static var timeSignature = [4, 4];
+	static var time = .0;
 
 	static var bpm = .0;
 	private static var lastBpm = .0;
     private static var bpmChangeOffset = .0;
 
-	static var time = .0;
 	static var paused = true;
 
 	inline function new() super();
@@ -25,9 +27,9 @@ package core;
             lastBpm = bpm;
         }
 
-		timings.beat.cur = (time - Data.offset - bpmChangeOffset) / (60000 / bpm);
+		timings.beat.cur = (time - Data.offset - bpmChangeOffset) / (60000 / bpm) * (4 / timeSignature[1]);
 		timings.measure.cur = timings.beat.cur * 0.25;
-		timings.step.cur = timings.beat.cur * 4;
+		timings.step.cur = timings.beat.cur * timeSignature[0];
 
 		for (type in [timings.measure, timings.beat, timings.step]) if (Math.floor(type.last) != Math.floor(type.cur)) {
 			type.last = type.cur;

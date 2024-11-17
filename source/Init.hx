@@ -20,33 +20,15 @@ class Init extends flixel.FlxState {
 		openfl.Lib.current.stage.align = "tl";
 		openfl.Lib.current.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
 
-		openfl.Lib.current.stage.application.window.onClose.add(() -> Settings.save());
-
-		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, e -> {
-			var errMsg = '';
-
-			for (item in CallStack.exceptionStack(true)) {
-				switch (item) {
-					case FilePos(s, file, line, column): errMsg += '$file: $line\n';
-					default: Sys.println(item);
-				}
-			}
-
-			lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
-			Sys.exit(1);
-		});
-
+		openfl.Lib.current.stage.application.window.onClose.add(saveSettings);
+		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 
 		Key.init();
 		Settings.load();
 
 		FlxG.plugins.addPlugin(new Conductor());
 
-		FlxObject.defaultMoves = false;
-		FlxSprite.defaultAntialiasing = Data.antialiasing;
-
 		FlxG.fixedTimestep = false;
-
 		FlxG.mouse.useSystemCursor = true;
 
 		FlxG.game.focusLostFramerate = 60;
@@ -54,10 +36,29 @@ class Init extends flixel.FlxState {
 
 		if (FlxG.save.data != null && FlxG.save.data.fullscreen) FlxG.fullscreen = FlxG.save.data.fullscreen;
 
+		FlxObject.defaultMoves = false;
+		FlxSprite.defaultAntialiasing = Data.antialiasing;
+
 		#if (allow_video && hxvlc) hxvlc.util.Handle.initAsync((s) -> trace('We got ${s ? '' : 'no '}async video loading')); #end
 
 		FlxG.game.addChild(fpsCounter = new FPS());
 
 		MenuState.switchState(new states.TitleState());
 	}
+
+	function onCrash(e:UncaughtErrorEvent) {
+		var errMsg = '';
+
+		for (item in CallStack.exceptionStack(true)) {
+			switch (item) {
+				case FilePos(s, file, line, column): errMsg += '$file: $line\n';
+				default: Sys.println(item);
+			}
+		}
+
+		lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
+		Sys.exit(1);
+	}
+
+	inline function saveSettings() Settings.save();
 }

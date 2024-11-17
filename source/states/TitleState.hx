@@ -12,6 +12,8 @@ class TitleState extends BeatState {
 
 	var textGroup:FlxTypedGroup<Alphabet>;
 
+    var sustain:Sustain;
+
     override function create() {
         Path.clearStoredMemory();
 
@@ -42,7 +44,9 @@ class TitleState extends BeatState {
         for (obj in [logo, titleText, gf]) obj.kill();
         ngSpr.active = ngSpr.visible = false;
 
-		Key.onPress(Data.keyBinds['accept'], () -> skipIntro());
+        add(sustain = new Sustain(100, TILE));
+
+		Key.onPress(Data.keyBinds['accept'], skipIntro);
     }
 
     var titleTimer = .0;
@@ -108,6 +112,8 @@ class TitleState extends BeatState {
         titleText.color = FlxColor.WHITE;
         titleText.alpha = 1;
 
-        FlxTimer.wait(1.5, () -> MenuState.switchState(new MainMenuState()));
+        FlxTimer.wait(1.5, eek);
 	}
+
+    inline function eek() MenuState.switchState(new MainMenuState());
 }

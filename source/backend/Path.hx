@@ -10,9 +10,6 @@ import openfl.media.Sound;
 import sys.FileSystem;
 
 @:keep @:publicFields class Path {
-	static final invalidChars = ~/[~&\\;:<>#]/;
-	static final hideChars = ~/[.,'"%?!]/;
-
 	static var localAssets:Array<String> = [];
 	static var trackedImages:Map<String, FlxGraphic> = [];
 	static var trackedAudio:Map<String, Sound> = [];
@@ -62,13 +59,11 @@ import sys.FileSystem;
 	inline static function sound(key:String) return audio('sounds/$key');
 	inline static function music(key:String) return audio('music/$key');
 
-	inline static function inst  (key:String, ?postfix:String) return audio('data/songs/${formatSongPath(key)}/Inst${postfix != null ? '-$postfix' : ''}');
-	inline static function voices(key:String, ?postfix:String) return audio('data/songs/${formatSongPath(key)}/Voices${postfix != null ? '-$postfix' : ''}');
-	inline static function formatSongPath(key:String) return hideChars.split(invalidChars.split(key.replace(' ', '-')).join('-')).join('').toLowerCase();
+	inline static function inst  (key:String, ?postfix:String) return audio('data/songs/$key/Inst${postfix != null ? '-$postfix' : ''}');
+	inline static function voices(key:String, ?postfix:String) return audio('data/songs/$key/Voices${postfix != null ? '-$postfix' : ''}');
 
-	inline static function sparrowAtlas(key:String) return FlxAtlasFrames.fromSparrow(image(key), xml(key));
-
-	inline static function fileExists(key:String) return FileSystem.exists(get(key)) ? true : false;
+	inline static function sparrow(key:String) return FlxAtlasFrames.fromSparrow(image(key), xml(key));
+	inline static function exists(key:String) return FileSystem.exists(get(key)) ? true : false;
 
 	static function clearUnusedMemory() {
 		removeMapContent(trackedImages, (key) -> FlxG.bitmap.remove(trackedImages[key]));
