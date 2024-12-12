@@ -1,12 +1,12 @@
 package objects;
 
 //taken from psych because my monkey brain doesnt know how to make it any better
-//todo: figure out how to do this without yoinking from psych
+//TODO figure out how to do this without yoinking from psych
 @:publicFields class Option {
 	public var child:Alphabet;
 	public var text(get, set):String;
 
-	var onChange:Void->Void = null;
+	var onChange:() -> Void = null;
 
 	var curOption = 0;
 

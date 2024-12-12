@@ -6,25 +6,23 @@ class CreditsState extends MenuState {
     static final credits:Array<{name:String, ?desc:String, ?link:String, ?add:Float}> = [
         {name: 'QUAZAR ENGINE DEVELOPERS', add: 50},
         {name: 'NickNGC',        desc: 'Owner, Programmer, Artist, Composer', link: 'nickngc'},
-        {name: 'Iccer',          desc: 'Artist',                                 link: 'iccerdraws', add: 50},
+        {name: 'Iccer',          desc: 'Artist',                              link: 'iccerdraws', add: 50},
         {name: "FUNKIN' CREW",             add: 50},
-        {name: 'Phantom Arcade', desc: 'Director and Artist',                    link: 'PhantomArcade3K'},
-        {name: 'ninjamuffin99',  desc: 'Co-Director and Programmer',             link: 'ninja_muffin99'},
-        {name: 'Kawai Sprite',   desc: 'Musician',                               link: 'kawaisprite'},
-        {name: 'evilsk8r',       desc: 'Artist',                                 link: 'evilsk8r'}
+        {name: 'Phantom Arcade', desc: 'Director and Artist',                 link: 'PhantomArcade3K'},
+        {name: 'ninjamuffin99',  desc: 'Co-Director and Programmer',          link: 'ninja_muffin99'},
+        {name: 'Kawai Sprite',   desc: 'Musician',                            link: 'kawaisprite'},
+        {name: 'evilsk8r',       desc: 'Artist',                              link: 'evilsk8r'}
     ];
-
-    var curY = 60.;
 
     var devs:FlxTypedSpriteGroup<Alphabet>;
     var desc:Alphabet;
 
     override function create() {
-        final bg = new QuazarSpr('menuDesat');
-        bg.color = 0xFFea71fd;
-        add(bg);
+        add(Sprite('menuDesat').setColor(0xFFea71fd));
 
         add(devs = new FlxTypedSpriteGroup());
+
+        var curY = 60.;
 
         for (i in 0...credits.length) {
             var credit = new Alphabet(isTitle(i) ? 90 : 135, curY, credits[i].name, isTitle(i) ? .8 : .7, isTitle(i));
@@ -33,40 +31,34 @@ class CreditsState extends MenuState {
             curY += 50 + credits[i].add ?? 0;
 
             if (!isTitle(i)) {
-                final icon = new QuazarSpr('credits/credits', credit.x + credit.width + 10, credit.y - 5, [{name: credits[i].name, prefix: credits[i].name, fps: 0}]);
+                final icon = Sparrow(credit.x + credit.width + 10, credit.y - 5, 'credits/credits').addPrefix(credits[i].name, credits[i].name, 0, false);
                 icon.active = false;
-                icon.animation.play(credits[i].name);
+                icon.playAnim(credits[i].name);
                 add(icon);
-            } else 
-                add(new FlxSprite(Std.int(credit.x + credit.width + 19), credit.y + 20).makeGraphic(Std.int(1190 - (credit.x + credit.width + 18)), 4, FlxColor.BLACK));
+            } else
+                add(Square(Std.int(credit.x + credit.width + 19), credit.y + 20, Std.int(1190 - (credit.x + credit.width + 18)), 4, FlxColor.BLACK));
         }
 
         add(desc = new Alphabet(30, 650, credits[curSelected].desc, .7, false));
 
-        Key.onPress(Data.keyBinds['accept'], openLink);
-        Key.onPress(Data.keyBinds['back'],   onBack);
-        Key.onPress(Data.keyBinds['up'],     onUp);
-        Key.onPress(Data.keyBinds['down'],   onDown);
+        onPress(accept, () -> FlxG.openURL('x.com/${credits[curSelected].link}'));
+
+        onPress(back, () -> {
+            Key.blockControls = true;
+            FlxG.sound.play(Path.sound('cancelMenu'), .6);
+            MenuState.switchState(new MainMenuState());
+        });
+
+        for (dir => val in [up => -1, down => 1]) onPress(dir, () -> changeItem(val));
+
         changeItem();
 
         super.create();
     }
 
-    inline function onUp()   changeItem(-1);
-    inline function onDown() changeItem(1);
-
-    inline function openLink() FlxG.openURL('x.com/${credits[curSelected].link}');
-
-    function onBack() {
-        Key.blockControls = true;
-        FlxG.sound.play(Path.sound('cancelMenu'), .6);
-        MenuState.switchState(new MainMenuState());
-    }
-
     function changeItem(huh = 0) {
-        do (curSelected = (curSelected + huh + credits.length) % credits.length) while (isTitle(curSelected));
-
         if (huh != 0) FlxG.sound.play(Path.sound('scrollMenu'), .4);
+        do (curSelected = (curSelected + huh + credits.length) % credits.length) while (isTitle(curSelected));
 
         for (i => credit in devs.members) if (!credit.bold) credit.alpha = i == curSelected ? 1 : .6;
         desc.text = credits[curSelected].desc;

@@ -18,7 +18,8 @@ import sys.FileSystem;
 		'assets/music/freakyMenu.ogg', 'assets/music/breakfast.ogg',
 		'assets/images/default.png', 'assets/images/default.fnt',
 		'assets/images/bold.png', 'assets/images/bold.fnt',
-		'assets/images/ui/transition.png'
+		'assets/images/ui/transition.png',
+		'assets/sounds/tick.ogg'
 	];
 
 	static function get(key:String, ?pos:haxe.PosInfos) {
@@ -29,11 +30,11 @@ import sys.FileSystem;
 		return 'assets/$key';
 	}
 
-	static function image(key:String) {
+	static function image(key:String, ?prefix:String = 'images') {
 		localAssets.push(key);
 
 		if (!trackedImages.exists(key)) {
-			final bitmap = BitmapData.fromFile(get('$key.png')) ?? FlxAssets.getBitmapData('flixel/images/logo/default.png');
+			final bitmap = BitmapData.fromFile(get('$prefix/$key.png')) ?? FlxAssets.getBitmapData('flixel/images/logo/default.png');
 			if (Data.gpuRendering) bitmap.disposeImage();
 
 			final graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
@@ -50,19 +51,21 @@ import sys.FileSystem;
 		return trackedAudio[key];
     }
 
-	inline static function font (key:String) return get('data/fonts/$key');
-	inline static function fnt  (key:String) return get('$key.fnt');
+	inline static function font(key:String) return get('data/fonts/$key');
+	inline static function fnt(key:String) return get('$key.fnt');
 	inline static function video(key:String) return get('videos/$key.mp4');
-	inline static function xml  (key:String) return get('$key.xml');
-	inline static function txt  (key:String) return get('$key.txt');
-	inline static function json (key:String) return get('$key.json');
+
+	inline static function xml(key:String, ?prefix:String) return get('$prefix/$key.xml');
+	inline static function txt(key:String) return get('$key.txt');
+	inline static function json(key:String) return get('$key.json');
+
 	inline static function sound(key:String) return audio('sounds/$key');
 	inline static function music(key:String) return audio('music/$key');
 
-	inline static function inst  (key:String, ?postfix:String) return audio('data/songs/$key/Inst${postfix != null ? '-$postfix' : ''}');
+	inline static function inst(key:String, ?postfix:String) return audio('data/songs/$key/Inst${postfix != null ? '-$postfix' : ''}');
 	inline static function voices(key:String, ?postfix:String) return audio('data/songs/$key/Voices${postfix != null ? '-$postfix' : ''}');
 
-	inline static function sparrow(key:String) return FlxAtlasFrames.fromSparrow(image(key), xml(key));
+	inline static function sparrow(key:String, ?prefix:String) return FlxAtlasFrames.fromSparrow(image(key, prefix), xml(key, prefix));
 	inline static function exists(key:String) return FileSystem.exists(get(key)) ? true : false;
 
 	static function clearUnusedMemory() {

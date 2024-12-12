@@ -12,8 +12,8 @@ import flixel.input.keyboard.FlxKey;
 	static function display(key:FlxKey) {
 		if (keys.exists(key)) return keys[key];
 	
-		var label = Std.string(key);
-		if(label.toLowerCase() == 'null') return '--';
+		var label = Std.string(key).toLowerCase();
+		if(label == 'null') return '--';
 
 		var arr:Array<String> = label.split('_');
 		for (i in 0...arr.length) arr[i] = Util.capitalize(arr[i]);

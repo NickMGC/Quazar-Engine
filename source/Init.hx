@@ -7,9 +7,7 @@ import haxe.CallStack;
 class Init extends flixel.FlxState {
 	public static var fpsCounter:FPS;
 
-	override function create():Void {
-		super.create();
-
+	override function create() {
 		@:privateAccess FlxG.save.bind('QuazarEngine', '${FlxG.stage.application.meta.get('company')}/${flixel.util.FlxSave.validate(FlxG.stage.application.meta.get('file'))}');
 
 		@:functionCode("
@@ -20,10 +18,22 @@ class Init extends flixel.FlxState {
 		openfl.Lib.current.stage.align = "tl";
 		openfl.Lib.current.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
 
-		openfl.Lib.current.stage.application.window.onClose.add(saveSettings);
-		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
+		openfl.Lib.current.stage.application.window.onClose.add(Settings.save);
+		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, e -> {
+			var errMsg = '';
 
-		Key.init();
+			for (item in CallStack.exceptionStack(true)) {
+				switch (item) {
+					case FilePos(s, file, line, column): errMsg += '$file: $line\n';
+					default: Sys.println(item);
+				}
+			}
+	
+			lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
+			Sys.exit(1);
+		});
+
+		Controls.init();
 		Settings.load();
 
 		FlxG.plugins.addPlugin(new Conductor());
@@ -44,21 +54,7 @@ class Init extends flixel.FlxState {
 		FlxG.game.addChild(fpsCounter = new FPS());
 
 		MenuState.switchState(new states.TitleState());
+
+		super.create();
 	}
-
-	function onCrash(e:UncaughtErrorEvent) {
-		var errMsg = '';
-
-		for (item in CallStack.exceptionStack(true)) {
-			switch (item) {
-				case FilePos(s, file, line, column): errMsg += '$file: $line\n';
-				default: Sys.println(item);
-			}
-		}
-
-		lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
-		Sys.exit(1);
-	}
-
-	inline function saveSettings() Settings.save();
 }

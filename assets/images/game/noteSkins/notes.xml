@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TextureAtlas imagePath="notes.png">
 	<!-- left -->
-	<SubTexture name="left end0000" x="843" y="742" width="51" height="65"/>
-	<SubTexture name="left hold0000" x="1283" y="768" width="51" height="50"/>
+	<SubTexture name="left end0000" x="843" y="742" width="50" height="65"/>
+	<SubTexture name="left hold0000" x="1283" y="768" width="50" height="50"/>
 
 	<SubTexture name="left0000" x="1195" y="162" width="154" height="158"/>
 
@@ -19,8 +19,8 @@
 	<SubTexture name="left confirm0003" x="475" y="242" width="214" height="217" frameX="-10" frameY="-10" frameWidth="234" frameHeight="238"/>
 
 	<!-- down -->
-	<SubTexture name="down end0000" x="470" y="676" width="51" height="65"/>
-	<SubTexture name="down hold0000" x="576" y="676" width="51" height="50"/>
+	<SubTexture name="down end0000" x="470" y="676" width="50" height="65"/>
+	<SubTexture name="down hold0000" x="576" y="676" width="50" height="50"/>
 
 	<SubTexture name="down0000" x="910" y="629" width="158" height="154"/>
 
@@ -37,8 +37,8 @@
 	<SubTexture name="down confirm0003" x="475" y="461" width="216" height="213" frameX="-11" frameY="-11" frameWidth="238" frameHeight="235"/>
 
 	<!-- up -->
-	<SubTexture name="up end0000" x="523" y="676" width="51" height="65"/>
-	<SubTexture name="up hold0000" x="576" y="729" width="51" height="50"/>
+	<SubTexture name="up end0000" x="523" y="676" width="50" height="65"/>
+	<SubTexture name="up hold0000" x="576" y="729" width="50" height="50"/>
 
 	<SubTexture name="up0000" x="910" y="472" width="158" height="155"/>
 
@@ -55,8 +55,8 @@
 	<SubTexture name="up confirm0003" x="693" y="460" width="215" height="213" frameX="-11" frameY="-10" frameWidth="238" frameHeight="233"/>
 
 	<!-- right -->
-	<SubTexture name="right end0000" x="843" y="675" width="51" height="65"/>
-	<SubTexture name="right hold0000" x="1230" y="768" width="51" height="50"/>
+	<SubTexture name="right end0000" x="843" y="675" width="50" height="65"/>
+	<SubTexture name="right hold0000" x="1230" y="768" width="50" height="50"/>
 
 	<SubTexture name="right0000" x="1195" y="2" width="154" height="158"/>
 

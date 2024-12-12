@@ -1,17 +1,15 @@
 package core.ui;
 
 class Transition extends FlxSubState {
-	public static var finish:Void -> Void;
+	public static var finish:() -> Void;
 
 	public function new(?transIn = false) {
 		super();
 
 		camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
 
-		final trans = new flixel.addons.display.FlxBackdrop(Path.image('images/ui/transition'), Y);
-		trans.scale.set(trans.scale.x / camera.zoom, trans.scale.y / camera.zoom);
-		trans.updateHitbox();
-		trans.scrollFactor.set();
+		final trans = new flixel.addons.display.FlxBackdrop(Path.image('ui/transition'), Y);
+		trans.setScale(trans.scale.x / camera.zoom, trans.scale.y / camera.zoom).setScrollFactor();
 		add(trans);
 
 		final center = (FlxG.width - trans.width) / 2;

@@ -1,6 +1,5 @@
 package states.options;
 
-import objects.Checkbox;
 import objects.Option;
 
 class OptionsState extends MenuState {
@@ -24,19 +23,12 @@ class OptionsState extends MenuState {
         {option: new Option('Show Debug statistics', "Shows debug statistics like Framerate and Memory.",               'showFPS')}
     ];
 
-    var groups = {text: new FlxTypedSpriteGroup<Alphabet>(), options: new FlxTypedSpriteGroup<Alphabet>(), checkboxes: new FlxTypedSpriteGroup<Checkbox>(), lines: new FlxTypedSpriteGroup<FlxSprite>()};
-
-    var curY = 60.;
+    var groups = {text: new FlxTypedSpriteGroup<Alphabet>(), options: new FlxTypedSpriteGroup<Alphabet>(), checkboxes: new FlxTypedSpriteGroup<FlxSprite>(), lines: new FlxTypedSpriteGroup<FlxSprite>()};
 
     var desc:Alphabet;
-    var bgClipped:QuazarSpr;
+    var bgClipped:FlxSprite;
 
-    function background() {
-        var bg = new QuazarSpr('menuDesat');
-        bg.color = 0xFFea71fd;
-        bg.scrollFactor.set();
-        return bg;
-    }
+    inline function background() return Sprite('menuDesat').setScrollFactor().setColor(0xFFea71fd);
 
     override function create() {
         if (!FlxG.sound.music?.playing) FlxG.sound.playMusic(Path.music('freakyMenu'), .5);
@@ -48,8 +40,9 @@ class OptionsState extends MenuState {
         add(bgClipped = background());
         bgClipped.clipRect = new flixel.math.FlxRect(0, 630, 1280, 90);
 
-        add(desc = new Alphabet(0, 650, '', .7, false, CENTER));
-        desc.scrollFactor.set();
+        add(desc = new Alphabet(0, 650, '', .7, false, CENTER).setScrollFactor());
+
+        var curY = 60.;
 
         for (i in 0...options.length) {
             var option = new Alphabet(135, curY, isTitle(i) ? options[i].title : options[i].option.name, isTitle(i) ? .8 : .7, isTitle(i), isTitle(i) ? CENTER : LEFT);
@@ -58,73 +51,62 @@ class OptionsState extends MenuState {
             if (isTitle(i)) {
                 option.screenCenter(X);
 
-                groups.lines.add(new FlxSprite(90, option.y + 20).makeGraphic(Std.int(option.x) - 107, 4, FlxColor.BLACK));
-                groups.lines.add(new FlxSprite(Std.int(option.x + option.width + 19), option.y + 20).makeGraphic(Std.int(1190 - (option.x + option.width + 18)), 4, FlxColor.BLACK));
+                groups.lines.add(Square(90, option.y + 20, Std.int(option.x) - 107, 4, FlxColor.BLACK));
+                groups.lines.add(Square(Std.int(option.x + option.width + 19), option.y + 20, Std.int(1190 - (option.x + option.width + 18)), 4, FlxColor.BLACK));
             } else {
-                if (options[i].option.type == 'bool')
-                    groups.checkboxes.add(new Checkbox(1110, option.y - 2, options[i].option.getValue())).ID = i;
-                else {
-                    var text = new Alphabet(935, option.y, options[i].option.getValue(), .7, false, RIGHT);
-                    text.autoSize = false;
-                    groups.options.add(text).fieldWidth = 300;
-            
-                    options[i].option.child = text;
-                    updateText(options[i].option);
+                switch(options[i].option.type) {
+                    case 'bool':
+                        final checkbox = Sparrow(1110, option.y - 2, 'options/checkbox').addPrefix('unchecked', 'unchecked', 0, false).addPrefix('checked', 'checked', 0, false);
+                        groups.checkboxes.add(checkbox).playAnim('${options[i].option.getValue() ? '' : 'un'}checked').ID = i;
+                    default:
+                        var text = new Alphabet(935, option.y, options[i].option.getValue(), .7, false, RIGHT);
+                        text.autoSize = false;
+                        groups.options.add(text).fieldWidth = 500;
+                
+                        options[i].option.child = text;
+                        updateText(options[i].option);
                 }
             }
 
             groups.text.add(option);
         }
 
-        Key.onPress(Data.keyBinds['back'],   onBack);
-        Key.onPress(Data.keyBinds['accept'], onAccept);
+        onPress(back, () -> {
+            Settings.save();
+            Settings.load();
+    
+            Key.blockControls = true;
+            FlxG.sound.play(Path.sound('cancelMenu'), .6);
+            MenuState.switchState(new states.MainMenuState());
+        });
 
-        Key.onPress(Data.keyBinds['up'],     onUp);
-        Key.onPress(Data.keyBinds['down'],   onDown);
+        onPress(accept, () -> {
+            if (curOption.type == 'bool') {
+                FlxG.sound.play(Path.sound('scrollMenu'), .4);
+    
+                curOption.setValue((curOption.getValue() == true) ? false : true);
 
-        Key.onPress(Data.keyBinds['left'],   onLeftPress);
-        Key.onPress(Data.keyBinds['right'],  onRightPress);
+                for (checkbox in groups.checkboxes.members) if (checkbox != null && checkbox.ID == curSelected)
+                    checkbox.playAnim('${curOption.getValue() == true ? '' : 'un'}checked');
+            }
 
-        Key.onHold (Data.keyBinds['left'],   onLeftHold);
-        Key.onHold (Data.keyBinds['right'],  onRightHold);
+            if (options[curSelected].state != null) {
+                Key.blockControls = true;
+                MenuState.switchState(Type.createInstance(options[curSelected].state, []));
+            }
+        });
+
+        for (dir => val in [up => -1, down => 1]) onPress(dir, () -> changeItem(val));
+
+        for (dir => val in [left => -1, right => 1]) {
+            onPress(dir, () -> updateValue(val));
+            onHold(dir, () -> if(holdTime > .5) updateValue(val, true));
+        }
+
         changeItem();
 
         super.create();
     }
-
-    inline function onUp()   changeItem(-1);
-    inline function onDown() changeItem(1);
-
-    inline function onLeftPress()  updateValue(-1);
-    inline function onRightPress() updateValue(1);
-
-    inline function onLeftHold()  if(holdTime > .5) updateValue(-1, true);
-    inline function onRightHold() if(holdTime > .5) updateValue(1, true);
-
-    function onBack() {
-        Settings.save();
-        Settings.load();
-
-        Key.blockControls = true;
-        FlxG.sound.play(Path.sound('cancelMenu'), .6);
-        MenuState.switchState(new states.MainMenuState());
-    }
-
-    function onAccept() {
-        if (curOption.type == 'bool') {
-            FlxG.sound.play(Path.sound('scrollMenu'), .4);
-
-            curOption.setValue((curOption.getValue() == true) ? false : true);
-            updateCheckbox();
-        }
-
-        if (options[curSelected].state != null) {
-            Key.blockControls = true;
-            MenuState.switchState(Type.createInstance(options[curSelected].state, []));
-        }
-    }
-
-    inline function updateCheckbox() for (checkbox in groups.checkboxes.members) if (checkbox != null && checkbox.ID == curSelected) checkbox.animation.play('${curOption.getValue() == true ? '' : 'un'}checked');
 
     function changeItem(huh = 0) {
         if (huh != 0) FlxG.sound.play(Path.sound('scrollMenu'), .4);
@@ -148,34 +130,32 @@ class OptionsState extends MenuState {
 
         FlxG.camera.scroll.y = FlxMath.lerp(FlxG.camera.scroll.y, Math.max(0, Math.min(curSelected - 8, options.length - 12)) * 200, Util.bound(elapsed * 10, 0, 1));
 
-        if (curOption.type == 'bool' || curOption.type == 'state') return;
-        if (FlxG.keys.anyPressed(Data.keyBinds['left']) || FlxG.keys.anyPressed(Data.keyBinds['right'])) holdTime += elapsed;
+        if ((curOption.type != 'bool' || curOption.type != 'state') && (FlxG.keys.anyPressed(Data.keyBinds['left']) || FlxG.keys.anyPressed(Data.keyBinds['right']))) holdTime += elapsed;
     }
 
     function updateValue(huh = 0, holding = false) {
         if (curOption.type == 'bool' || curOption.type == 'state') return;
 
-        if (huh != 0) {
-            if (curOption.type == 'string') curOption.curOption = ((curOption.curOption + (huh == -1 ? -1 : 1)) + curOption.options.length) % curOption.options.length;
+        curOption.setValue(updateTypes(huh));
+        updateText(curOption);
+        curOption.change();
 
-            curOption.setValue(curOption.type == 'string' ? curOption.options[curOption.curOption] : updateTypes(huh));
-            updateText(curOption);
-            curOption.change();
-
-            if (!holding) {
-                FlxG.sound.play(Path.sound('scrollMenu'), .4);
-                holdTime = 0;
-            }
+        if (!holding) {
+            FlxG.sound.play(Path.sound('scrollMenu'), .4);
+            holdTime = 0;
         }
     }
 
-    function updateTypes(huh = 0) {
-        var holdValue = FlxMath.bound((curOption.getValue() + (huh == -1 ? -curOption.changeValue : curOption.changeValue)), curOption.minValue, curOption.maxValue);
+    function updateTypes(huh = 0):Dynamic {
+        final holdValue = FlxMath.bound((curOption.getValue() + (huh * curOption.changeValue)), curOption.minValue, curOption.maxValue);
 
         return switch(curOption.type) {
-            case 'int': holdValue = Math.round(holdValue);
-            case 'float' | 'percent': holdValue = FlxMath.roundDecimal(holdValue, curOption.decimals);
-            default: holdValue;
+            case 'int': Math.round(holdValue);
+            case 'float' | 'percent': FlxMath.roundDecimal(holdValue, curOption.decimals);
+            case 'string':
+                curOption.curOption = (curOption.curOption + huh + curOption.options.length) % curOption.options.length;
+                curOption.options[curOption.curOption];
+            default: curOption.getValue();
         }
     }
 

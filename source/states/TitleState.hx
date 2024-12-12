@@ -3,54 +3,50 @@ package states;
 class TitleState extends BeatState {
     var skippedIntro = false;
 
-    var ngSpr:QuazarSpr;
-	var logo:QuazarSpr;
-	var gf:QuazarSpr;
-	var titleText:QuazarSpr;
+    var ngSpr:FlxSprite;
+	var logo:FlxSprite;
+	var gf:FlxSprite;
+	var titleText:FlxSprite;
 
 	var randomPhrase:Array<String> = FlxG.random.getObject([for (t in openfl.Assets.getText(Path.txt('data/introText')).split('\n')) t.split('--')]);
 
 	var textGroup:FlxTypedGroup<Alphabet>;
 
-    var sustain:Sustain;
-
     override function create() {
         Path.clearStoredMemory();
 
-        Conductor.bpm = 102;
+        bpm = 102;
 
         FlxG.sound.playMusic(Path.music('freakyMenu'), 0);
 		FlxG.sound.music.fadeIn(4, 0, .5);
-    
-        super.create();
 
-		add(gf = new QuazarSpr('title/title', 510, 20, [{name: 'left', prefix: 'left', fps: 24}, {name: 'right', prefix: 'right', fps: 24}]));
-        gf.animation.play('left');
+        add(gf = Sparrow(510, 20, 'title/title'));
+        gf.addPrefix('left', 'left', 24, false).addPrefix('right', 'right', 24, false).playAnim('left');
 
-        add(logo = new QuazarSpr('title/title', -140, -100, [{name: 'bump', prefix: 'logo bumpin', fps: 24}]));
-        logo.animation.play('bump');
+        add(logo = Sparrow(-140, -100, 'title/title').addPrefix('bump', 'logo bumpin', 24, false).playAnim('bump'));
 
-        add(ngSpr = new QuazarSpr('title/title', 0, 375, [{name: 'idle', prefix: 'newgrounds_logo', fps: 0}]));
-        ngSpr.animation.play('idle');
+        add(ngSpr = Sparrow(0, 375, 'title/title').addPrefix('idle', 'newgrounds_logo', 0, false).playAnim('idle')); 
         ngSpr.setGraphicSize(ngSpr.frameWidth * .8);
         ngSpr.updateHitbox();
         ngSpr.screenCenter(X);
 
-        add(titleText = new QuazarSpr('title/title', 137, 575, [{name: 'idle', prefix: 'ENTER IDLE0', fps: 24}, {name: 'press', prefix: 'ENTER PRESSED0', fps: 24, loop: true}]));
-		titleText.animation.play('idle');
+        add(titleText = Sparrow(137, 575, 'title/title'));
+        titleText.addPrefix('idle', 'ENTER IDLE0', 24, false).addPrefix('press', 'ENTER PRESSED0', 24).playAnim('idle');
 
         add(textGroup = new FlxTypedGroup());
 
         for (obj in [logo, titleText, gf]) obj.kill();
         ngSpr.active = ngSpr.visible = false;
 
-        add(sustain = new Sustain(100, TILE));
+        FlxTransitionableState.skipNextTransOut = true;
 
-		Key.onPress(Data.keyBinds['accept'], skipIntro);
+        onPress(accept, skipIntro);
+    
+        super.create();
     }
 
     var titleTimer = .0;
-	override function update(elapsed:Float):Void {
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
 		if (!Key.blockControls) {
@@ -63,8 +59,8 @@ class TitleState extends BeatState {
 	}
 
     override function onBeat() {
-        gf.animation.play(curBeat % 2 == 0 ? 'left' : 'right', true);
-        logo.animation.play('bump', true);
+        gf.playAnim(curBeat % 2 == 0 ? 'left' : 'right', true);
+        logo.playAnim('bump', true);
 
 		if (!skippedIntro) {
 			ngSpr.visible = curBeat == 7;
@@ -87,7 +83,9 @@ class TitleState extends BeatState {
         super.onBeat();
     }
 
-    inline function createText(textArray:Array<String>, ?offset = 0) for (i in 0...textArray.length) textGroup.add(new Alphabet(0, (textGroup.length * 60) + 200 + offset, textArray[i])).screenCenter(X);
+    inline function createText(textArray:Array<String>, ?offset = 0) for (i in 0...textArray.length)
+        textGroup.add(new Alphabet(0, (textGroup.length * 60) + 200 + offset, textArray[i])).screenCenter(X);
+
 	inline function deleteText() while (textGroup.members.length != 0) textGroup.remove(textGroup.members[0], true).destroy();
 
     function skipIntro() {
@@ -108,12 +106,10 @@ class TitleState extends BeatState {
         FlxG.sound.play(Path.sound('confirmMenu'), .7);
 
         if (!Data.flashingLights) titleText.active = false;
-        titleText.animation.play('press');
+        titleText.playAnim('press');
         titleText.color = FlxColor.WHITE;
         titleText.alpha = 1;
 
-        FlxTimer.wait(1.5, eek);
+        FlxTimer.wait(1.5, () -> MenuState.switchState(new MainMenuState()));
 	}
-
-    inline function eek() MenuState.switchState(new MainMenuState());
 }

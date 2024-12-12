@@ -3,13 +3,12 @@ package core.ui;
 @:publicFields class MenuState extends flixel.addons.ui.FlxUIState {
 	override function create() {
 		persistentUpdate = persistentDraw = true;
+		Key.blockControls = false;
 
 		if(!FlxTransitionableState.skipNextTransOut) {
 			FlxG.state.openSubState(new Transition());
 			Transition.finish = closeSubState;
 		}
-
-		Key.blockControls = false;
 
 		FlxTransitionableState.skipNextTransOut = false;
 
@@ -37,10 +36,8 @@ package core.ui;
 	static function startTransition(?nextState:FlxState) {
 		if(nextState == null) return;
 
-		function stateChange() nextState == FlxG.state ? FlxG.resetState() : FlxG.switchState(nextState);
-
 		FlxG.state.openSubState(new Transition(true));
-		Transition.finish = stateChange;
+		Transition.finish = () -> nextState == FlxG.state ? FlxG.resetState() : FlxG.switchState(nextState);
 	}
 
 	static function getState():MenuState return cast FlxG.state;

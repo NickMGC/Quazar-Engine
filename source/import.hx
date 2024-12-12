@@ -10,11 +10,16 @@ import backend.Path;
 import backend.Util;
 
 import backend.Settings;
+import backend.Binds.*;
 
 
 //Core
-import core.Controls as Key;
+import core.Controls;
 import core.Conductor;
+import core.Controls as Key;
+import core.Keys.*;
+
+import core.SpriteHandler.*;
 
 import core.ui.Transition;
 
@@ -23,13 +28,14 @@ import core.ui.MenuSubstate;
 import core.ui.BeatState;
 import core.ui.BeatSubstate;
 
-import core.Song;
-
+import core.Chart;
 
 //Objects
 import objects.Alphabet;
-import objects.QuazarSpr;
+
 import objects.core.Sustain;
+import objects.core.Note;
+import objects.core.Splash;
 
 //Flixel
 import flixel.sound.*;
@@ -49,8 +55,10 @@ import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 
 using flixel.util.FlxStringUtil;
+using core.SpriteHandler;
+using backend.Binds;
+
+using StringTools;
 
 import flixel.addons.transition.FlxTransitionableState;
 #end
-
-using StringTools;

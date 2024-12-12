@@ -13,9 +13,9 @@ import flixel.input.keyboard.FlxKey;
 
 	//Controls
 	static var keyBinds:Map<String, Array<Int>> = [
-		'note_left' => [A, LEFT], 'note_down' => [S, DOWN], 'note_up' => [W, UP], 'note_right' => [D, RIGHT],
-		'left' => [A, LEFT], 'down' => [S, DOWN], 'up' => [W, UP], 'right' => [D, RIGHT],
-		'accept' => [SPACE, ENTER], 'back' => [ESCAPE, BACKSPACE], 'pause' => [ESCAPE, ENTER], 'reset' => [R]
+		'note_left' => [LEFT, A], 'note_down' => [DOWN, S], 'note_up' => [UP, W], 'note_right' => [RIGHT, D],
+		'left' => [LEFT, A], 'down' => [DOWN, S], 'up' => [UP, W], 'right' => [RIGHT, D],
+		'accept' => [ENTER, SPACE], 'back' => [BACKSPACE, ESCAPE], 'pause' => [ENTER, ESCAPE], 'reset' => [R, NONE]
 	];
 
 	//Delay
@@ -29,13 +29,12 @@ import flixel.input.keyboard.FlxKey;
 }
 
 @:publicFields class Settings {
-	static function resetKeys() {
+	static function resetKeys()
 		Data.keyBinds = [
-			'note_left' => [A, LEFT], 'note_down' => [S, DOWN], 'note_up' => [W, UP], 'note_right' => [D, RIGHT],
-			'left' => [A, LEFT], 'down' => [S, DOWN], 'up' => [W, UP], 'right' => [D, RIGHT],
-			'accept' => [SPACE, ENTER], 'back' => [ESCAPE, BACKSPACE], 'pause' => [ESCAPE, ENTER], 'reset' => [R]
+			'note_left' => [LEFT, A], 'note_down' => [DOWN, S], 'note_up' => [UP, W], 'note_right' => [RIGHT, D],
+			'left' => [LEFT, A], 'down' => [DOWN, S], 'up' => [UP, W], 'right' => [RIGHT, D],
+			'accept' => [ENTER, SPACE], 'back' => [BACKSPACE, ESCAPE], 'pause' => [ENTER, ESCAPE], 'reset' => [R, NONE]
 		];
-	}
 
 	static function save() {
 		for (key in Type.getClassFields(Data)) Reflect.setField(FlxG.save.data, key, Reflect.field(Data, key));
@@ -50,7 +49,7 @@ import flixel.input.keyboard.FlxKey;
 		if (Init.fpsCounter != null) Init.fpsCounter.visible = Data.showFPS;
 
 		if (FlxG.save.data.volume != null) FlxG.sound.volume = FlxG.save.data.volume;
-		if (FlxG.save.data.mute   != null) FlxG.sound.muted  = FlxG.save.data.mute;
+		if (FlxG.save.data.mute != null) FlxG.sound.muted = FlxG.save.data.mute;
 
 		trace('Settings loaded');
 	}

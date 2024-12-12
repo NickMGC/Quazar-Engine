@@ -11,12 +11,9 @@ class Alphabet extends flixel.text.FlxBitmapText {
 		this.bold = bold;
 		this.text = text;
 
-		font = flixel.graphics.frames.FlxBitmapFont.fromAngelCode(Path.image(bold ? 'images/bold' : 'images/default'), Path.fnt('images/${bold ? 'bold' : 'default'}'));
+		font = flixel.graphics.frames.FlxBitmapFont.fromAngelCode(Path.image(bold ? 'bold' : 'default'), Path.fnt('images/${bold ? 'bold' : 'default'}'));
 
-		if (scale != null) {
-			this.scale.set(scale, scale);
-			this.updateHitbox();
-		}
+		if (scale != null) this.setScale(scale);
 
 		if (bold) autoUpperCase = true;
 		if (align != null) alignment = align;

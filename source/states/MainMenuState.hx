@@ -7,32 +7,30 @@ class MainMenuState extends MenuState {
         {name: 'storymode', state: MainMenuState}, {name: 'freeplay', state: testing.AlphabetAlign}, {name: 'credits', state: CreditsState}, {name: 'options', state: states.options.OptionsState}
     ];
 
-    var menuItems:FlxTypedSpriteGroup<QuazarSpr>;
+    var menuItems:FlxSpriteGroup;
 
     override function create() {
-        for (obj in [new QuazarSpr('menuBG'), menuItems = new FlxTypedSpriteGroup()]) add(obj);
+        add(Sprite('menuBG'));
+        add(menuItems = new FlxSpriteGroup());
 
 		for (i => item in options) {
-            final animInfo = [{name: 'idle', prefix: '${item.name} idle0', fps: 24, loop: true}, {name: 'select', prefix: '${item.name} selected0', fps: 24, loop: true}];
-            menuItems.add(new QuazarSpr('mainmenu/buttons', 0, (i * 140) + 90, animInfo)).screenCenter(X);
+            final menu = Sparrow(0, (i * 140) + 90, 'mainmenu/buttons');
+            menu.addPrefix('idle', '${item.name} idle0', 24, true).addPrefix('selected', '${item.name} selected0', 24, true).playAnim('idle');
+            menuItems.add(menu).screenCenter(X);
         }
 
-        Key.onPress(Data.keyBinds['accept'], onAccept);
-        Key.onPress(Data.keyBinds['up'],     onUp);
-        Key.onPress(Data.keyBinds['down'],   onDown);
+        onPress(accept, () -> {
+            Key.blockControls = true;
+    
+            FlxG.sound.play(Path.sound('confirmMenu'), .7);
+            flixel.effects.FlxFlicker.flicker(menuItems.members[curSelected], 1, .06, false, false, (_) -> MenuState.switchState(Type.createInstance(options[curSelected].state, [])));
+        });
+
+        for (dir => val in [up => -1, down => 1]) onPress(dir, () -> changeItem(val));
+
         changeItem();
 
         super.create();
-    }
-
-    inline function onUp()   changeItem(-1);
-    inline function onDown() changeItem(1);
-
-    function onAccept() {
-        Key.blockControls = true;
-
-        FlxG.sound.play(Path.sound('confirmMenu'), .7);
-        flixel.effects.FlxFlicker.flicker(menuItems.members[curSelected], 1, .06, false, false, (_) -> MenuState.switchState(Type.createInstance(options[curSelected].state, [])));
     }
 
     function changeItem(huh = 0) {
@@ -42,10 +40,10 @@ class MainMenuState extends MenuState {
 
         for (i => item in menuItems.members) {
             if (i == curSelected) {
-                item.animation.play('select');
+                item.playAnim('selected');
                 item.centerOffsets();
             } else {
-                item.animation.play('idle');
+                item.playAnim('idle');
                 item.updateHitbox();
             }
             item.screenCenter(X);

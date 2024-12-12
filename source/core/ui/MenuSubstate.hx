@@ -4,15 +4,13 @@ class MenuSubstate extends FlxSubState {
 	var storedControls:Map<String, Map<Int, FlxSignal>>;
 
 	override function create() {
-		storedControls = Key.callbacks;
-		Key.callbacks.clear();
+		storedControls = Controls.callbacks;
+		for (i in ['press', 'hold', 'release']) Controls.callbacks[i].clear();
 
-		closeCallback = resetControls;
+		closeCallback = () -> Controls.callbacks = storedControls;
 
 		super.create();
 	}
-
-	inline function resetControls() Key.callbacks = storedControls;
 
 	override function update(elapsed:Float) {super.update(elapsed);}
 }
