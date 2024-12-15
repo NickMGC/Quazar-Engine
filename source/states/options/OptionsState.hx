@@ -59,7 +59,7 @@ class OptionsState extends MenuState {
                         final checkbox = Sparrow(1110, option.y - 2, 'options/checkbox').addPrefix('unchecked', 'unchecked', 0, false).addPrefix('checked', 'checked', 0, false);
                         groups.checkboxes.add(checkbox).playAnim('${options[i].option.getValue() ? '' : 'un'}checked').ID = i;
                     default:
-                        var text = new Alphabet(935, option.y, options[i].option.getValue(), .7, false, RIGHT);
+                        var text = new Alphabet(795 , option.y, options[i].option.getValue(), .7, false, RIGHT);
                         text.autoSize = false;
                         groups.options.add(text).fieldWidth = 500;
                 
