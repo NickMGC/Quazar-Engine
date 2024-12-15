@@ -6,7 +6,7 @@ class OptionsState extends MenuState {
     static var curSelected = 1;
     var curOption:Option = null;
 
-    final options:Array<{?option:Option, ?title:String, ?state:Class<FlxState>, ?add:Float}> = [ 
+    final options:Array<{?option:Option, ?title:String, ?state:NextState, ?add:Float}> = [ 
         {title: 'Gameplay Settings', add: 50},
         {option: new Option('Downscroll',            'Changes your note direction from up to down.',                    'downScroll')},
         {option: new Option('Middlescroll',          "Puts player's notes in the centre.",                              'middleScroll')},
@@ -14,8 +14,8 @@ class OptionsState extends MenuState {
         {option: new Option('Flashing Lights',       "Includes flashing lights during some in-game moments.",           'flashingLights')},
         {option: new Option('Reset Character',       'Determines whether the character should reset or not.',           'reset'), add: 50},
         {option: new Option('Safe frames',           'Adjusts how strict the timing window is for hitting notes.',      'safeFrames', 'float').addProperties(.1, 2, 10, 5), add: 50},
-        {option: new Option('Change Controls...',    null, null, 'state'), state: ControlsState},
-        {option: new Option('Change Delay...',       null, null, 'state'), state: DelayState, add: 50},
+        {option: new Option('Change Controls...',    null, null, 'state'), state: ControlsState.new},
+        {option: new Option('Change Delay...',       null, null, 'state'), state: DelayState.new, add: 50},
         {title: 'Graphics Settings', add: 50},
         {option: new Option('Anti-Aliasing',         'Anti-Aliasing is used to make graphics look less pixelated.',     'antialiasing')},
         {option: new Option('GPU Rendering',         'Puts the workload on the GPU when rendering graphics.',           'gpuRendering')},
@@ -23,7 +23,7 @@ class OptionsState extends MenuState {
         {option: new Option('Show Debug statistics', "Shows debug statistics like Framerate and Memory.",               'showFPS')}
     ];
 
-    var groups = {text: new FlxTypedSpriteGroup<Alphabet>(), options: new FlxTypedSpriteGroup<Alphabet>(), checkboxes: new FlxTypedSpriteGroup<FlxSprite>(), lines: new FlxTypedSpriteGroup<FlxSprite>()};
+    var groups = {text: new FlxAlphabetGroup(), options: new FlxAlphabetGroup(), checkboxes: new FlxSpriteGroup(), lines: new FlxSpriteGroup()};
 
     var desc:Alphabet;
     var bgClipped:FlxSprite;
@@ -31,7 +31,7 @@ class OptionsState extends MenuState {
     inline function background() return Sprite('menuDesat').setScrollFactor().setColor(0xFFea71fd);
 
     override function create() {
-        if (!FlxG.sound.music?.playing) FlxG.sound.playMusic(Path.music('freakyMenu'), .5);
+        if (!FlxG.sound.music?.playing) playMusic('freakyMenu', .5);
 
         add(background());
 
@@ -51,8 +51,8 @@ class OptionsState extends MenuState {
             if (isTitle(i)) {
                 option.screenCenter(X);
 
-                groups.lines.add(Square(90, option.y + 20, Std.int(option.x) - 107, 4, FlxColor.BLACK));
-                groups.lines.add(Square(Std.int(option.x + option.width + 19), option.y + 20, Std.int(1190 - (option.x + option.width + 18)), 4, FlxColor.BLACK));
+                groups.lines.add(Graphic(90, option.y + 20, Std.int(option.x) - 107, 4, FlxColor.BLACK));
+                groups.lines.add(Graphic(Std.int(option.x + option.width + 19), option.y + 20, Std.int(1190 - (option.x + option.width + 18)), 4, FlxColor.BLACK));
             } else {
                 switch(options[i].option.type) {
                     case 'bool':
@@ -74,15 +74,15 @@ class OptionsState extends MenuState {
         onPress(back, () -> {
             Settings.save();
             Settings.load();
-    
-            Key.blockControls = true;
-            FlxG.sound.play(Path.sound('cancelMenu'), .6);
-            MenuState.switchState(new states.MainMenuState());
+
+            blockControls = true;
+            playSound('cancelMenu', .6);
+            switchState(states.MainMenuState.new);
         });
 
         onPress(accept, () -> {
             if (curOption.type == 'bool') {
-                FlxG.sound.play(Path.sound('scrollMenu'), .4);
+                playSound('scrollMenu', .4);
     
                 curOption.setValue((curOption.getValue() == true) ? false : true);
 
@@ -91,8 +91,8 @@ class OptionsState extends MenuState {
             }
 
             if (options[curSelected].state != null) {
-                Key.blockControls = true;
-                MenuState.switchState(Type.createInstance(options[curSelected].state, []));
+                blockControls = true;
+                switchState(options[curSelected].state);
             }
         });
 
@@ -109,7 +109,7 @@ class OptionsState extends MenuState {
     }
 
     function changeItem(huh = 0) {
-        if (huh != 0) FlxG.sound.play(Path.sound('scrollMenu'), .4);
+        if (huh != 0) playSound('scrollMenu', .4);
 
         do {
             curSelected = (curSelected + huh + options.length) % options.length;

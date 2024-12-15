@@ -3,7 +3,7 @@ package objects;
 class Alphabet extends flixel.text.FlxBitmapText {
 	public var bold = true;
 
-	public function new(?x = .0, ?y = .0, ?text = '', ?scale, ?bold = true, ?align) {
+	public function new(?x = .0, ?y = .0, ?text = '', ?scale:Float, ?bold = true, ?align:FlxTextAlign) {
 		super(font);
 
 		this.x = x;
@@ -20,5 +20,12 @@ class Alphabet extends flixel.text.FlxBitmapText {
 
 		letterSpacing = bold ? -5 : -2;
 		antialiasing = Data.antialiasing;
+	}
+
+	public function setAlign(align:FlxTextAlign, fieldWidth:Int):Alphabet {
+		autoSize = false;
+		alignment = align;
+		this.fieldWidth = fieldWidth;
+		return this;
 	}
 }

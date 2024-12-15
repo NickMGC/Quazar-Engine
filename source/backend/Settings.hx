@@ -13,7 +13,7 @@ import flixel.input.keyboard.FlxKey;
 
 	//Controls
 	static var keyBinds:Map<String, Array<Int>> = [
-		'note_left' => [LEFT, A], 'note_down' => [DOWN, S], 'note_up' => [UP, W], 'note_right' => [RIGHT, D],
+		'left_note' => [LEFT, A], 'down_note' => [DOWN, S], 'up_note' => [UP, W], 'right_note' => [RIGHT, D],
 		'left' => [LEFT, A], 'down' => [DOWN, S], 'up' => [UP, W], 'right' => [RIGHT, D],
 		'accept' => [ENTER, SPACE], 'back' => [BACKSPACE, ESCAPE], 'pause' => [ENTER, ESCAPE], 'reset' => [R, NONE]
 	];
@@ -29,9 +29,9 @@ import flixel.input.keyboard.FlxKey;
 }
 
 @:publicFields class Settings {
-	static function resetKeys()
+	inline static function resetKeys()
 		Data.keyBinds = [
-			'note_left' => [LEFT, A], 'note_down' => [DOWN, S], 'note_up' => [UP, W], 'note_right' => [RIGHT, D],
+			'left_note' => [LEFT, A], 'down_note' => [DOWN, S], 'up_note' => [UP, W], 'right_note' => [RIGHT, D],
 			'left' => [LEFT, A], 'down' => [DOWN, S], 'up' => [UP, W], 'right' => [RIGHT, D],
 			'accept' => [ENTER, SPACE], 'back' => [BACKSPACE, ESCAPE], 'pause' => [ENTER, ESCAPE], 'reset' => [R, NONE]
 		];

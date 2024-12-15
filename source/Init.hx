@@ -30,6 +30,7 @@ class Init extends flixel.FlxState {
 			}
 	
 			lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
+			trace(errMsg += '\n${e.error}');
 			Sys.exit(1);
 		});
 
@@ -53,7 +54,7 @@ class Init extends flixel.FlxState {
 
 		FlxG.game.addChild(fpsCounter = new FPS());
 
-		MenuState.switchState(new states.TitleState());
+		switchState(states.TitleState.new);
 
 		super.create();
 	}

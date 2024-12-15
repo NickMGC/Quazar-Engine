@@ -15,9 +15,11 @@ package objects.core;
     function new() {
         super();
 
+        final dir = notes[index % 4];
+
         Sparrow('game/noteSkins/notes');
-		this.addPrefix(Note.notes[index], '${Note.notes[index]}0', 24, false);
-        this.playAnim(Note.notes[index]);
+
+		this.addPrefix(dir, '${dir}0', 24, false).playAnim(dir);
         updateHitbox();
     }
 }

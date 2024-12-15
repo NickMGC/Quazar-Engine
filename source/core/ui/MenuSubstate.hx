@@ -12,5 +12,5 @@ class MenuSubstate extends FlxSubState {
 		super.create();
 	}
 
-	override function update(elapsed:Float) {super.update(elapsed);}
+	override function update(elapsed:Float) super.update(elapsed);
 }

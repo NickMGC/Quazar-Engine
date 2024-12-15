@@ -1,4 +1,4 @@
-package backend;
+package core.controls;
 
 import flixel.input.keyboard.FlxKey;
 
@@ -9,14 +9,11 @@ import flixel.input.keyboard.FlxKey;
 		PERIOD => '.', COMMA => ',', SEMICOLON => ';', GRAVEACCENT => '`', LBRACKET => '[', RBRACKET => ']', QUOTE => "'", NONE => '--'
 	];
 
-	static function display(key:FlxKey) {
-		if (keys.exists(key)) return keys[key];
-	
-		var label = Std.string(key).toLowerCase();
-		if(label == 'null') return '--';
+	static function display(key:FlxKey):String return keys.exists(key) ? keys[key] : getKey(key.toString().toLowerCase());
 
-		var arr:Array<String> = label.split('_');
-		for (i in 0...arr.length) arr[i] = Util.capitalize(arr[i]);
-		return arr.join(' ');
+	private static function getKey(key:String):String {
+		return if (key == 'null') '--';
+		else if (key.contains('_')) [for (split in key.split('_')) Util.capitalize(split)].join(' ');
+		else Util.capitalize(key);
 	}
 }

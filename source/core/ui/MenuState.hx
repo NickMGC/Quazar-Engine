@@ -1,16 +1,16 @@
 package core.ui;
 
-@:publicFields class MenuState extends flixel.addons.ui.FlxUIState {
+@:publicFields class MenuState extends FlxState {
 	override function create() {
 		persistentUpdate = persistentDraw = true;
-		Key.blockControls = false;
+		blockControls = false;
 
-		if(!FlxTransitionableState.skipNextTransOut) {
+		if(!TransitionState.skipNextTransOut) {
 			FlxG.state.openSubState(new Transition());
 			Transition.finish = closeSubState;
 		}
 
-		FlxTransitionableState.skipNextTransOut = false;
+		TransitionState.skipNextTransOut = false;
 
 		super.create();
 
@@ -22,22 +22,14 @@ package core.ui;
 		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
 	}
 
-	static function switchState(?nextState:FlxState) {
-		if(nextState == null) {
-			FlxG.resetState();
-			FlxTransitionableState.skipNextTransIn = false;
-			return;
+	override function startOutro(onOutroComplete:() -> Void) {
+		if (TransitionState.skipNextTransIn) {
+			TransitionState.skipNextTransIn = false;
+			return super.startOutro(onOutroComplete);
 		}
-		
-		FlxTransitionableState.skipNextTransIn ? FlxG.switchState(nextState) : startTransition(nextState);
-		FlxTransitionableState.skipNextTransIn = false;
-	}
-
-	static function startTransition(?nextState:FlxState) {
-		if(nextState == null) return;
 
 		FlxG.state.openSubState(new Transition(true));
-		Transition.finish = () -> nextState == FlxG.state ? FlxG.resetState() : FlxG.switchState(nextState);
+		Transition.finish = onOutroComplete;
 	}
 
 	static function getState():MenuState return cast FlxG.state;

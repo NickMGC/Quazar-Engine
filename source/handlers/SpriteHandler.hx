@@ -1,4 +1,6 @@
-package core;
+package handlers;
+
+import flixel.system.FlxAssets.FlxGraphicAsset;
 
 @:publicFields class SpriteHandler {
     /**
@@ -134,9 +136,37 @@ package core;
      * @param path    The path to the image.
      * @param prefix  The folder the image is located at. Defaults to `"images"`.
      */
-    static function Sparrow(?x:Float = 0, ?y:Float = 0, path:String, ?prefix:String = 'images'):FlxSprite {
+    static function Sparrow(?x:Float = 0, ?y:Float = 0, path:FlxGraphicAsset, ?prefix:String = 'images'):FlxSprite {
         var sprite = new FlxSprite(x, y);
         sprite.frames = Path.sparrow(path, prefix);
+        sprite.updateHitbox();
+        return sprite;
+    }
+
+    /**
+     * Creates a sparrow animated sprite.
+     * @param x       The X-coordinate of the point in space.
+     * @param y       The Y-coordinate of the point in space.
+     * @param path    The path to the image.
+     * @param prefix  The folder the image is located at. Defaults to `"images"`.
+     */
+    static function Packer(?x:Float = 0, ?y:Float = 0, path:FlxGraphicAsset, ?prefix:String = 'images'):FlxSprite {
+        var sprite = new FlxSprite(x, y);
+        sprite.frames = Path.packer(path, prefix);
+        sprite.updateHitbox();
+        return sprite;
+    }
+
+    /**
+     * Creates a sparrow animated sprite.
+     * @param x       The X-coordinate of the point in space.
+     * @param y       The Y-coordinate of the point in space.
+     * @param path    The path to the image.
+     * @param prefix  The folder the image is located at. Defaults to `"images"`.
+     */
+    static function Aseprite(?x:Float = 0, ?y:Float = 0, path:FlxGraphicAsset, ?prefix:String = 'images'):FlxSprite {
+        var sprite = new FlxSprite(x, y);
+        sprite.frames = Path.aseprite(path, prefix);
         sprite.updateHitbox();
         return sprite;
     }
@@ -158,14 +188,14 @@ package core;
     }
 
     /**
-     * Creates a square.
+     * Creates a graphic.
      * @param x       The X-coordinate of the point in space.
      * @param y       The Y-coordinate of the point in space.
      * @param width   The width of the rectangle.
      * @param height  The height of the rectangle.
      * @param color   The color of the rectangle.
      */
-	static function Square(x:Float, y:Float, width:Int, height:Int, color:FlxColor):FlxSprite {
+	static function Graphic(x:Float, y:Float, width:Int, height:Int, color:FlxColor):FlxSprite {
         var sprite = new FlxSprite(x, y);
         sprite.makeGraphic(width, height, color);
         sprite.updateHitbox();

@@ -4,8 +4,7 @@ package objects.core;
 	function new(index = 0) {
 		super();
 
-        final id = index % 4;
-		final dir = Note.notes[id];
+		final dir = Note.notes[index % 4];
 
 		Sparrow('game/noteSplashes/splashes');
 		for (i in [1, 2]) this.addPrefix(dir + i, '$dir ${i}0', 24, false);

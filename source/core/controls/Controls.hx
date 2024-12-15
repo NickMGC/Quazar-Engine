@@ -1,4 +1,4 @@
-package core;
+package core.controls;
 
 import openfl.events.KeyboardEvent;
 
@@ -34,4 +34,8 @@ import openfl.events.KeyboardEvent;
             callbacks[type][key].add(callback);
         }
     }
+
+    inline static function onPress(keys:Array<Int>, callback:() -> Void) check('press', keys, callback);
+    inline static function onHold(keys:Array<Int>, callback:() -> Void) check('hold', keys, callback);
+    inline static function onRelease(keys:Array<Int>, callback:() -> Void) check('release', keys, callback);
 }

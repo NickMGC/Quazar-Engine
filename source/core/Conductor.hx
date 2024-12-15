@@ -2,9 +2,9 @@ package core;
 
 @:publicFields class Conductor extends FlxBasic {
 	static var timings = {
-		measure: {length: .0, last: -1., cur: -1, signal: new FlxSignal()},
-		beat: {length: .0, last: -1., cur: -1, signal: new FlxSignal()},
-		step: {length: .0, last: -1., cur: -1, signal: new FlxSignal()}
+		measure: {length: .0, last: -1., cur: 0, signal: new FlxSignal()},
+		beat: {length: .0, last: -1., cur: 0, signal: new FlxSignal()},
+		step: {length: .0, last: -1., cur: 0, signal: new FlxSignal()}
 	};
 
 	static var song(default, set):FlxSound;
@@ -54,8 +54,9 @@ package core;
 		song = null;
 		timeSignature = [4, 4];
 
-		time = bpm.cur = bpm.last = bpm.offset = offset = lastTime = 0;
-        timings.measure.last = timings.beat.last = timings.step.last = timings.measure.cur = timings.beat.cur = timings.step.cur = -1;
+		time = bpm.cur = bpm.last = bpm.offset = offset = lastTime = timings.measure.cur = timings.beat.cur = timings.step.cur = 0;
+		timings.measure.length = timings.beat.length = timings.step.length = 0;
+        timings.measure.last = timings.beat.last = timings.step.last = -1;
         paused = true;
 	}
 

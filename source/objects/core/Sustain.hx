@@ -30,10 +30,8 @@ enum RenderType {
         add(setup(55, lastSus.y + lastSus.height - 1, 'end'));
     }
 
-    private function setup(x = .0, y = .0, postfix = '') {
-        if (postfix != '') postfix = ' $postfix';
-
-        final dir = Note.notes[id] + postfix;
+    private function setup(x:Float = 0, y:Float = 0, postfix:String) {
+        final dir = Note.notes[id] + ' $postfix';
         return Sparrow(x, y, 'game/noteSkins/notes').addPrefix(dir, '${dir}0', 24, false).playAnim(dir).setOrigin().setOffset();
     }
 }

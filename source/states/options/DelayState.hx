@@ -16,7 +16,7 @@ class DelayState extends BeatState {
 
     override function create() {
         bpm = 80;
-        FlxG.sound.playMusic(Path.music('songOffset'), .5);
+        playMusic('songOffset', .5);
 
         add(props = new FlxSpriteGroup());
         for (i in 0...objects.length) props.add(Sprite(objects[i].pos[0], objects[i].pos[1], 'stage/${objects[i].name}', 'stages').setScale(.7));
@@ -28,15 +28,14 @@ class DelayState extends BeatState {
         add(delayText = new FlxText(0, 30, 1280, '${Data.offset}').setFormat(Path.font('fredoka.ttf'), 32, FlxColor.WHITE, CENTER));
 
         onPress(back, () -> {
-            Key.blockControls = true;
-            MenuState.switchState(new OptionsState());
-            FlxG.sound.music.stop();
+            blockControls = true;
+            switchState(OptionsState.new);
+            stopMusic();
         });
 
         for (dir => val in [left => -1, right => 1]) {
             onPress(dir, () -> updateOffset(val));
             onHold(dir, () -> if (holdTime > .5) updateOffset(val));
-
             onRelease(dir, () -> holdTime = 0);
         }
 

@@ -55,7 +55,7 @@ import sys.FileSystem;
 	inline static function fnt(key:String) return get('$key.fnt');
 	inline static function video(key:String) return get('videos/$key.mp4');
 
-	inline static function xml(key:String, ?prefix:String) return get('$prefix/$key.xml');
+	inline static function xml(key:String) return get('$key.xml');
 	inline static function txt(key:String) return get('$key.txt');
 	inline static function json(key:String) return get('$key.json');
 
@@ -65,12 +65,15 @@ import sys.FileSystem;
 	inline static function inst(key:String, ?postfix:String) return audio('data/songs/$key/Inst${postfix != null ? '-$postfix' : ''}');
 	inline static function voices(key:String, ?postfix:String) return audio('data/songs/$key/Voices${postfix != null ? '-$postfix' : ''}');
 
-	inline static function sparrow(key:String, ?prefix:String) return FlxAtlasFrames.fromSparrow(image(key, prefix), xml(key, prefix));
+	inline static function sparrow(key:String, ?prefix:String = 'images') return FlxAtlasFrames.fromSparrow(image(key, prefix), xml('$prefix/$key'));
+	inline static function aseprite(key:String, ?prefix:String = 'images') return FlxAtlasFrames.fromAseprite(image(key, prefix), json('$prefix/$key'));
+	inline static function packer(key:String, ?prefix:String = 'images') return FlxAtlasFrames.fromTexturePackerJson(image(key, prefix), txt('$prefix/$key'));
+
 	inline static function exists(key:String) return FileSystem.exists(get(key)) ? true : false;
 
 	static function clearUnusedMemory() {
 		removeMapContent(trackedImages, (key) -> FlxG.bitmap.remove(trackedImages[key]));
-		removeMapContent(trackedAudio,  (key) -> openfl.Assets.cache.clear(key));
+		removeMapContent(trackedAudio, (key) -> openfl.Assets.cache.clear(key));
 
 		openfl.system.System.gc();
 	}

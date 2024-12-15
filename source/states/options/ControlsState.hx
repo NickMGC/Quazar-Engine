@@ -1,13 +1,13 @@
 package states.options;
 
 import flixel.input.keyboard.FlxKey;
-import backend.KeyFormat;
+import core.controls.KeyFormat;
 
 typedef MenuItem = {name:String, ?varName:String, ?type:String, ?add:Float, ?scale:Float, ?callback:() -> Void}
 
 class ControlsState extends MenuState {
-    var keyGroup:FlxTypedSpriteGroup<Alphabet>;
-    var optionGroup:FlxTypedSpriteGroup<Alphabet>;
+    var keyGroup:FlxAlphabetGroup;
+    var optionGroup:FlxAlphabetGroup;
 
     var curSelected = 2;
 
@@ -24,10 +24,10 @@ class ControlsState extends MenuState {
         {name: 'Controls', type: 'title', scale: .8, add: 80},
         {name: 'Gameplay', type: 'title', scale: .5, add: 30},
 
-        {name: 'Left',  varName: 'note_left',  type: 'keybind'},
-        {name: 'Down',  varName: 'note_down',  type: 'keybind'},
-        {name: 'Up',    varName: 'note_up',    type: 'keybind'},
-        {name: 'Right', varName: 'note_right', type: 'keybind', add: 40},
+        {name: 'Left',  varName: 'left_note',  type: 'keybind'},
+        {name: 'Down',  varName: 'down_note',  type: 'keybind'},
+        {name: 'Up',    varName: 'up_note',    type: 'keybind'},
+        {name: 'Right', varName: 'right_note', type: 'keybind', add: 40},
 
         {name: 'Menu Navigation', type: 'title', scale: .5, add: 30},
 
@@ -42,10 +42,10 @@ class ControlsState extends MenuState {
 
     override function create() {
         add(Sprite('menuDesat').setColor(0xFFea71fd));
-        add(Square(90, 120, 1100, 4, FlxColor.BLACK));
+        add(Graphic(90, 120, 1100, 4, FlxColor.BLACK));
 
-        add(keyGroup = new FlxTypedSpriteGroup());
-        add(optionGroup = new FlxTypedSpriteGroup());
+        add(keyGroup = new FlxAlphabetGroup());
+        add(optionGroup = new FlxAlphabetGroup());
 
         options[12].callback = resetControls;
 
@@ -56,9 +56,7 @@ class ControlsState extends MenuState {
 
             if (options[i].type == 'keybind') {
                 var binds = Data.keyBinds[options[i].varName];
-                final key = new Alphabet(0, option.y, '[${KeyFormat.display(binds[0])}, ${KeyFormat.display(binds[1])}]', .5, false, RIGHT);
-                key.autoSize = false;
-                key.fieldWidth = 1280;
+                final key = new Alphabet(0, option.y, '[${KeyFormat.display(binds[0])}, ${KeyFormat.display(binds[1])}]', .5, false).setAlign(RIGHT, 1280);
                 key.alpha = .6;
                 keyGroup.add(key).ID = i;
             }
@@ -72,8 +70,8 @@ class ControlsState extends MenuState {
         onPress(accept, () -> {
             if (!binding && options[curSelected].type != 'title') {
                 var option = options[curSelected];
-    
-                FlxG.sound.play(Path.sound('scrollMenu'), .4);
+
+                playSound('scrollMenu', .4);
         
                 if (option.type == 'keybind') {
                     binding = firstBind = true;
@@ -92,10 +90,11 @@ class ControlsState extends MenuState {
 
         onPress(back, () -> {
             if (!binding) {
-                Key.blockControls = true;
+                blockControls = true;
                 Settings.save();
-                MenuState.switchState(new OptionsState());
-                FlxG.sound.play(Path.sound('cancelMenu'), .6);   
+                Settings.load();
+                switchState(OptionsState.new);
+                playSound('cancelMenu', .6);
             }
         });
 
@@ -131,7 +130,7 @@ class ControlsState extends MenuState {
 
         updateBind(defaultBinds[0], defaultBinds[1]);
         optionGroup.members[curSelected].alpha = 1;
-        FlxG.sound.play(Path.sound('cancelMenu'), .6);
+        playSound('cancelMenu', .6);
     }
 
     function bind(key:Int) {
@@ -159,7 +158,7 @@ class ControlsState extends MenuState {
     }
 
     function changeItem(change:Int = 0) {
-        if (change != 0) FlxG.sound.play(Path.sound('scrollMenu'), .4);
+        if (change != 0) playSound('scrollMenu', .4);
         do (curSelected = (curSelected + change + options.length) % options.length) while (options[curSelected].type == 'title');
 
         for (option in optionGroup.members) if (options[option?.ID].type != 'title') option.alpha = option.ID == curSelected ? 1 : .6;
