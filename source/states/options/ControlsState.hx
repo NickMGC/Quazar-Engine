@@ -67,7 +67,7 @@ class ControlsState extends MenuState {
         optionGroup.members[0].screenCenter(X);
         for(i in [11, 12]) optionGroup.members[i].x = 100;
 
-        onPress(accept, () -> {
+        onPress(accept, {
             if (!binding && options[curSelected].type != 'title') {
                 var option = options[curSelected];
 
@@ -88,7 +88,7 @@ class ControlsState extends MenuState {
             }
         });
 
-        onPress(back, () -> {
+        onPress(back, {
             if (!binding) {
                 blockControls = true;
                 Settings.save();
@@ -98,7 +98,7 @@ class ControlsState extends MenuState {
             }
         });
 
-        for (dir => val in [up => -1, down => 1]) onPress(dir, () -> if (!binding) changeItem(val));
+        for (dir => val in [up => -1, down => 1]) onPress(dir, if (!binding) changeItem(val));
 
         changeItem();
 

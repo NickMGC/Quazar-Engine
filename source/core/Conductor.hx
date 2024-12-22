@@ -10,12 +10,10 @@ package core;
 	static var song(default, set):FlxSound;
 	static var bpm = {cur: .0, last: .0, offset: .0};
 
-	static var timeSignature = [4, 4];
 	static var time = .0;
 
 	static var paused = true;
 
- 	//Data.offset didn't play nice with looping so I had to bring out the big guns.
 	private static var offset = .0;
 	private static var lastTime = .0;
 
@@ -39,9 +37,9 @@ package core;
             bpm.last = bpm.cur;
         }
 
-		timings.beat.length = (time - Data.offset - bpm.offset) / (60000 / bpm.cur) * (4 / timeSignature[1]);
+		timings.beat.length = (time - Data.offset - bpm.offset) / (60000 / bpm.cur);
 		timings.measure.length = timings.beat.length * .25;
-		timings.step.length = timings.beat.length * timeSignature[0];
+		timings.step.length = timings.beat.length * 4;
 
 		for (type in [timings.measure, timings.beat, timings.step]) if (Math.floor(type.last) != Math.floor(type.length)) {
 			type.last = type.length;
@@ -52,7 +50,6 @@ package core;
 
 	static function reset() {
 		song = null;
-		timeSignature = [4, 4];
 
 		time = bpm.cur = bpm.last = bpm.offset = offset = lastTime = timings.measure.cur = timings.beat.cur = timings.step.cur = 0;
 		timings.measure.length = timings.beat.length = timings.step.length = 0;

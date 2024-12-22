@@ -4,13 +4,9 @@ package objects.core;
 	function new(index = 0) {
 		super();
 
-		final dir = Note.notes[index % 4];
-
-		Sparrow('game/noteSplashes/splashes');
-		for (i in [1, 2]) this.addPrefix(dir + i, '$dir ${i}0', 24, false);
-
-		this.playAnim(dir + FlxG.random.int(1, 2));
-
-        animation.finishCallback = _ -> kill;
+		this.loadFrames('game/noteSplashes/splashes');
+		for (note in Note.notes) this.addPrefix(note + 1, '$note 10', 24, false).addPrefix(note + 2, '$note 20', 24, false);
 	}
+
+	function splash(index = 0) this.playAnim(Note.notes[index % 4] + FlxG.random.int(1, 2)).onAnimFinish(name -> kill());
 }

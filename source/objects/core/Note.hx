@@ -1,25 +1,30 @@
 package objects.core;
 
-@:publicFields class Note extends FlxSprite {
+@:publicFields class Note extends NoteSprite {
     public static final notes = ['left', 'down', 'up', 'right'];
 
-    var time = .0;
-    var length = .0;
-    var index = 0;
+    var time:Float = .0;
+    var length:Float = .0;
+    var index:Int = 0;
 
-    var type:String;
+    var type:String = '';
 
     var holding = false;
 	var hittable = true;
 
-    function new() {
-        super();
+    var sustain:Sustain;
+    var parent:StrumNote;
 
-        final dir = notes[index % 4];
+    function setup(json:NoteData, line:StrumLine) {
+        index = json.index ?? 0;
+        length = json.length ?? 0;
+        time = json.time ?? 0;
 
-        Sparrow('game/noteSkins/notes');
+        type = json.type ?? '';
 
-		this.addPrefix(dir, '${dir}0', 24, false).playAnim(dir);
-        updateHitbox();
+        holding = false;
+		hittable = visible = true;
+
+        return this;
     }
 }

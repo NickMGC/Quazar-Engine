@@ -11,9 +11,8 @@ import flixel.input.keyboard.FlxKey;
 
 	static function display(key:FlxKey):String return keys.exists(key) ? keys[key] : getKey(key.toString().toLowerCase());
 
-	private static function getKey(key:String):String {
+	private static function getKey(key:String):String
 		return if (key == 'null') '--';
 		else if (key.contains('_')) [for (split in key.split('_')) Util.capitalize(split)].join(' ');
 		else Util.capitalize(key);
-	}
 }

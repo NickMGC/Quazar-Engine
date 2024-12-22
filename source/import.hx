@@ -19,38 +19,25 @@ using handlers.SpriteHandler;
 
 
 //Core
-import core.Conductor;
 import core.Chart;
 
-
-//UI
-import core.ui.Transition;
-
-import core.ui.MenuState;
-import core.ui.MenuState.*;
-
-import core.ui.MenuSubstate;
-import core.ui.BeatState;
-import core.ui.BeatSubstate;
-
+import core.*;
+import core.ui.*;
 
 //Controls
 import core.controls.Controls;
-
-import core.controls.Controls.onPress;
-import core.controls.Controls.onHold;
-import core.controls.Controls.onRelease;
 import core.controls.Controls.blockControls;
+
+import macros.ControlsMacro.*;
 
 import core.controls.Binds.*;
 
 
 //Objects
-import objects.Alphabet;
+import objects.*;
+import objects.core.*;
 
-import objects.core.Sustain;
-import objects.core.Note;
-import objects.core.Splash;
+import states.*;
 
 
 //Flixel
@@ -80,5 +67,7 @@ using flixel.util.FlxStringUtil;
 
 using StringTools;
 
-import flixel.addons.transition.FlxTransitionableState as TransitionState;
+import flixel.addons.transition.FlxTransitionableState.skipNextTransIn;
+import flixel.addons.transition.FlxTransitionableState.skipNextTransOut;
+
 #end

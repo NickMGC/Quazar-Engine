@@ -1,0 +1,20 @@
+{
+    "song": "Test",
+
+    "bpm": 150,
+    "speed": 1.6,
+
+    "stage": "stage",
+    "characters": ["dad", "gf", "bf"],
+
+    "notes": [
+        {"time": 12800, "index": 0},
+        {"time": 13200, "index": 1},
+        {"time": 13600, "index": 2},
+        {"time": 14000, "index": 3},
+        {"time": 14400, "index": 4},
+        {"time": 14800, "index": 5},
+        {"time": 15200, "index": 6},
+        {"time": 15600, "index": 7}
+    ]
+}

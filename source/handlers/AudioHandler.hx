@@ -1,6 +1,7 @@
 package handlers;
 
 @:publicFields class AudioHandler {
+    //TODO: inherit docs whenever possible here
     /**
      * Plays a sound from an embedded sound. Tries to recycle a cached sound first.
      * @param embeddedSound  The embedded sound resource you want to play.

@@ -27,16 +27,16 @@ class DelayState extends BeatState {
 
         add(delayText = new FlxText(0, 30, 1280, '${Data.offset}').setFormat(Path.font('fredoka.ttf'), 32, FlxColor.WHITE, CENTER));
 
-        onPress(back, () -> {
+        onPress(back, {
             blockControls = true;
             switchState(OptionsState.new);
             stopMusic();
         });
 
         for (dir => val in [left => -1, right => 1]) {
-            onPress(dir, () -> updateOffset(val));
-            onHold(dir, () -> if (holdTime > .5) updateOffset(val));
-            onRelease(dir, () -> holdTime = 0);
+            onPress(dir, updateOffset(val));
+            onHold(dir, if (holdTime > .5) updateOffset(val));
+            onRelease(dir, holdTime = 0);
         }
 
         super.create();

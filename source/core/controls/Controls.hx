@@ -4,38 +4,37 @@ import openfl.events.KeyboardEvent;
 
 @:publicFields class Controls {
     static var callbacks:Map<String, Map<Int, FlxSignal>> = ['press' => [], 'hold' => [], 'release' => []];
+    static var justPressedKeys:Map<Int, Bool> = [];
 
-    static var justPressed = false;
     static var blockControls = true;
 
     static function init() {
-        FlxG.signals.preStateSwitch.add(() -> for (i in ['press', 'hold', 'release']) callbacks[i].clear());
+        FlxG.signals.preStateSwitch.add(() -> {
+            for (i in ['press', 'hold', 'release']) callbacks[i].clear();
+            justPressedKeys.clear();
+        });
 
         FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, event -> {
-            if (!blockControls) {
-                if (!justPressed) {
-                    if (callbacks['press'].exists(event.keyCode)) callbacks['press'][event.keyCode].dispatch();
-                    justPressed = true;
-                }
-        
-                if (callbacks['hold'].exists(event.keyCode)) callbacks['hold'][event.keyCode].dispatch();   
+            if (blockControls) return;
+
+            if (!justPressedKeys[event.keyCode]) {
+                if (event.keyCode == 122) FlxG.fullscreen = !FlxG.fullscreen;
+
+                callbacks['press'][event.keyCode]?.dispatch();
+                justPressedKeys[event.keyCode] = true;
             }
+
+            callbacks['hold'][event.keyCode]?.dispatch();
         });
 
         FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, event -> {
-            justPressed = false;
-            if (!blockControls && callbacks['release'].exists(event.keyCode)) callbacks['release'][event.keyCode].dispatch();
+            justPressedKeys[event.keyCode] = false;
+            if (!blockControls) callbacks['release'][event.keyCode]?.dispatch();
         });
     }
 
-    static function check(type:String, keys:Array<Int>, callback:() -> Void) {
-        for (key in keys) {
-            if (!callbacks[type].exists(key)) callbacks[type].set(key, new FlxSignal());
-            callbacks[type][key].add(callback);
-        }
+    @:noCompletion static function bind(type:String, keys:Array<Int>, callback:Void -> Void) for (key in keys) {
+        if (!callbacks[type].exists(key)) callbacks[type][key] = new FlxSignal();
+        callbacks[type][key].add(callback);
     }
-
-    inline static function onPress(keys:Array<Int>, callback:() -> Void) check('press', keys, callback);
-    inline static function onHold(keys:Array<Int>, callback:() -> Void) check('hold', keys, callback);
-    inline static function onRelease(keys:Array<Int>, callback:() -> Void) check('release', keys, callback);
 }

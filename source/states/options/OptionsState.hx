@@ -23,7 +23,11 @@ class OptionsState extends MenuState {
         {option: new Option('Show Debug statistics', "Shows debug statistics like Framerate and Memory.",               'showFPS')}
     ];
 
-    var groups = {text: new FlxAlphabetGroup(), options: new FlxAlphabetGroup(), checkboxes: new FlxSpriteGroup(), lines: new FlxSpriteGroup()};
+    var textGroup:FlxAlphabetGroup;
+    var optionGroup:FlxAlphabetGroup;
+
+    var checkboxGroup:FlxSpriteGroup;
+    var lineGroup:FlxSpriteGroup;
 
     var desc:Alphabet;
     var bgClipped:FlxSprite;
@@ -35,12 +39,14 @@ class OptionsState extends MenuState {
 
         add(background());
 
-        for (group in [groups.text, groups.options, groups.checkboxes, groups.lines]) add(group);
+        add(textGroup = new FlxAlphabetGroup());
+        add(optionGroup = new FlxAlphabetGroup());
+
+        add(checkboxGroup = new FlxSpriteGroup());
+        add(lineGroup = new FlxSpriteGroup());
 
         add(bgClipped = background());
         bgClipped.clipRect = new flixel.math.FlxRect(0, 630, 1280, 90);
-
-        add(desc = new Alphabet(0, 650, '', .7, false, CENTER).setScrollFactor());
 
         var curY = 60.;
 
@@ -51,27 +57,30 @@ class OptionsState extends MenuState {
             if (isTitle(i)) {
                 option.screenCenter(X);
 
-                groups.lines.add(Graphic(90, option.y + 20, Std.int(option.x) - 107, 4, FlxColor.BLACK));
-                groups.lines.add(Graphic(Std.int(option.x + option.width + 19), option.y + 20, Std.int(1190 - (option.x + option.width + 18)), 4, FlxColor.BLACK));
+                lineGroup.add(Graphic(90, option.y + 20, Std.int(option.x) - 107, 4, FlxColor.BLACK));
+                lineGroup.add(Graphic(Std.int(option.x + option.width + 19), option.y + 20, Std.int(1190 - (option.x + option.width + 18)), 4, FlxColor.BLACK));
             } else {
                 switch(options[i].option.type) {
                     case 'bool':
-                        final checkbox = Sparrow(1110, option.y - 2, 'options/checkbox').addPrefix('unchecked', 'unchecked', 0, false).addPrefix('checked', 'checked', 0, false);
-                        groups.checkboxes.add(checkbox).playAnim('${options[i].option.getValue() ? '' : 'un'}checked').ID = i;
+                        checkboxGroup.add(Sparrow(1110, option.y - 2, 'options/checkbox')
+                            .addPrefix('unchecked', 'unchecked', 0, false).addPrefix('checked', 'checked', 0, false)
+                            .playAnim('${options[i].option.getValue() ? '' : 'un'}checked')).ID = i;
                     default:
                         var text = new Alphabet(795 , option.y, options[i].option.getValue(), .7, false, RIGHT);
                         text.autoSize = false;
-                        groups.options.add(text).fieldWidth = 500;
-                
+                        optionGroup.add(text).fieldWidth = 500;
+
                         options[i].option.child = text;
                         updateText(options[i].option);
                 }
             }
 
-            groups.text.add(option);
+            textGroup.add(option);
         }
 
-        onPress(back, () -> {
+        add(desc = new Alphabet(0, 650, '', .7, false, CENTER).setScrollFactor());
+
+        onPress(back, {
             Settings.save();
             Settings.load();
 
@@ -80,14 +89,13 @@ class OptionsState extends MenuState {
             switchState(states.MainMenuState.new);
         });
 
-        onPress(accept, () -> {
+        onPress(accept, {
             if (curOption.type == 'bool') {
                 playSound('scrollMenu', .4);
     
                 curOption.setValue((curOption.getValue() == true) ? false : true);
 
-                for (checkbox in groups.checkboxes.members) if (checkbox != null && checkbox.ID == curSelected)
-                    checkbox.playAnim('${curOption.getValue() == true ? '' : 'un'}checked');
+                for (checkbox in checkboxGroup.members) if (checkbox?.ID == curSelected) checkbox.playAnim('${curOption.getValue() == true ? '' : 'un'}checked');
             }
 
             if (options[curSelected].state != null) {
@@ -96,11 +104,11 @@ class OptionsState extends MenuState {
             }
         });
 
-        for (dir => val in [up => -1, down => 1]) onPress(dir, () -> changeItem(val));
+        for (dir => val in [up => -1, down => 1]) onPress(dir, changeItem(val));
 
         for (dir => val in [left => -1, right => 1]) {
-            onPress(dir, () -> updateValue(val));
-            onHold(dir, () -> if(holdTime > .5) updateValue(val, true));
+            onPress(dir, updateValue(val));
+            onHold(dir, if(holdTime > .5) updateValue(val, true));
         }
 
         changeItem();
@@ -121,7 +129,7 @@ class OptionsState extends MenuState {
 
         bgClipped.visible = curOption.type != 'state';
 
-        for (num => option in groups.text.members) if (!option.bold) option.alpha = num == curSelected ? 1 : .6;
+        for (num => option in textGroup.members) if (!option.bold) option.alpha = num == curSelected ? 1 : .6;
     }
 
 	var holdTime = .0;

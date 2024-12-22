@@ -3,40 +3,46 @@ package handlers;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 
 @:publicFields class SpriteHandler {
-    /**
-     * Adds a new animation to the sprite.
-     * 
-     * @param Name 	  What this animation should be called (e.g. `"run"`).
-     * @param Prefix  Common beginning of image names in atlas (e.g. `"tiles-"`).
-     * @param FPS     The animation speed in frames per second. Note: individual frames have their own duration, which overrides this value.
-     * @param Loop    Whether or not the animation is looped or just plays once.
-     * @param FlipX   Whether the frames should be flipped horizontally.
-     * @param FlipY   Whether the frames should be flipped vertically.
-     */
+    static function loadFrames<T:FlxSprite>(sprite:T, path:FlxGraphicAsset, ?prefix:String = 'images'):T {
+        sprite.frames = Path.sparrow(path, prefix);
+        sprite.updateHitbox();
+        return sprite;
+    }
+
+    @:inheritDoc(flixel.animation.FlxAnimationController.addByPrefix)
     inline static function addPrefix<T:FlxSprite>(sprite:T, name:String, prefix:String, fps:Float = 24, loop:Bool = true, flipX:Bool = false, flipY:Bool = false):T {
         sprite.animation.addByPrefix(name, prefix, fps, loop, flipX, flipY);
         return sprite;
     }
 
-    /**
-     * Adds a new animation to the sprite.
-     * 
-     * @param Name 	  What this animation should be called (e.g. `"run"`).
-     * @param Prefix  Common beginning of image names in atlas (e.g. `"tiles-"`).
-     * @param Indices An array of numbers indicating what frames to play in what order (e.g. `[0, 1, 2]`).
-     * @param FPS     The speed in frames per second that the animation should play at (e.g. `40` fps).
-     * @param Loop    Whether or not the animation is looped or just plays once.
-     * @param FlipX   Whether the frames should be flipped horizontally.
-     * @param FlipY   Whether the frames should be flipped vertically.
-     */
-    inline static function addIndices<T:FlxSprite>(sprite:T, name:String, prefix:String, indices:Array<Int>, fps:Float = 24, loop:Bool = true, flipX:Bool = false, flipY:Bool = false):T {
-        sprite.animation.addByIndices(name, prefix, indices, '', fps, loop, flipX, flipY);
+    @:inheritDoc(flixel.animation.FlxAnimationController.addByIndices)
+    inline static function addIndices<T:FlxSprite>(sprite:T, name:String, prefix:String, indices:Array<Int>, postfix:String, fps:Float = 24, loop:Bool = true, flipX:Bool = false, flipY:Bool = false):T {
+        sprite.animation.addByIndices(name, prefix, indices, postfix, fps, loop, flipX, flipY);
         return sprite;
     }
 
-    /**
-     * Forces the sprite to draw to the graphics buffer. Useful for preloading assets.
-     */
+    @:inheritDoc(flixel.animation.FlxAnimationController.play)
+	inline static function playAnim<T:FlxSprite>(sprite:T, name:String, force:Bool = false, reversed:Bool = false, frame:Int = 0):T {
+        sprite.animation.play(name, force, reversed, frame);
+        return sprite;
+    }
+
+	inline static function onAnimFinish<T:FlxSprite>(sprite:T, callback:(animName:String) -> Void):T {
+        #if (flixel >= "5.9.0")
+        sprite.animation.onFinish.add(callback);
+        #else
+        sprite.animation.finishCallback = callback;
+        #end
+        return sprite;
+    }
+
+    @:inheritDoc(flixel.animation.FlxAnimationController.finish)
+	inline static function finishAnim<T:FlxSprite>(sprite:T):T {
+        sprite.animation.finish();
+        return sprite;
+    }
+
+    /** Forces the sprite to draw to the graphics buffer. Useful for preloading assets.*/
     inline static function precache<T:FlxSprite>(sprite:T):T {
 		if (sprite != null) {
             final ogAlpha = sprite.alpha;
@@ -44,28 +50,6 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
             sprite.draw();
             sprite.alpha = ogAlpha;
         }
-        return sprite;
-    }
-
-    /**
-     * Plays an existing animation (e.g. `"run"`). If you call an animation that is already playing, it will be ignored.
-     *
-     * @param name      The string name of the animation you want to play.
-     * @param force     Whether to force the animation to restart.
-     * @param reversed  Whether to play animation backwards or not.
-     * @param frame     The frame number in the animation you want to start from. If a negative value is passed, a random frame is used.
-     *
-     */
-	inline static function playAnim<T:FlxSprite>(sprite:T, name:String, force:Bool = false, reversed:Bool = false, frame:Int = 0):T {
-        sprite.animation.play(name, force, reversed, frame);
-        return sprite;
-    }
-
-    /**
-     * Stops current animation and sets its frame to the last one.
-     */
-	inline static function finishAnim<T:FlxSprite>(sprite:T):T {
-        sprite.animation.finish();
         return sprite;
     }
 
@@ -118,14 +102,21 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
         return sprite;
     }
 
-    /**
-     * Sets the desired color.
-     *
-     * @param color  The X-coordinate of the point in space.
-     *
-     */
+    /** Sets the desired color.*/
     inline static function setColor<T:FlxSprite>(sprite:T, color:Int):T {
         sprite.color = color;
+        return sprite;
+    }
+
+    @:inheritDoc(flixel.FlxSprite.centerOrigin)
+    inline static function centerOrigins<T:FlxSprite>(sprite:T):T {
+        sprite.centerOrigin();
+        return sprite;
+    }
+
+    @:inheritDoc(flixel.FlxSprite.centerOffsets)
+    inline static function centerOffset<T:FlxSprite>(sprite:T, AdjustPosition:Bool = false):T {
+        sprite.centerOffsets(AdjustPosition);
         return sprite;
     }
 
@@ -142,6 +133,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
         sprite.updateHitbox();
         return sprite;
     }
+
 
     /**
      * Creates a sparrow animated sprite.

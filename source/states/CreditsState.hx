@@ -8,25 +8,24 @@ class CreditsState extends MenuState {
         {name: 'NickNGC',        desc: 'Owner, Programmer, Artist, Composer', link: 'nickngc'},
         {name: 'Iccer',          desc: 'Artist',                              link: 'iccerdraws', add: 50},
         {name: "FUNKIN' CREW",             add: 50},
-        {name: 'Phantom Arcade', desc: 'Director and Artist',                 link: 'PhantomArcade3K'},
-        {name: 'ninjamuffin99',  desc: 'Co-Director and Programmer',          link: 'ninja_muffin99'},
+        {name: 'Phantom Arcade', desc: 'Director, Artist',                    link: 'PhantomArcade3K'},
+        {name: 'ninjamuffin99',  desc: 'Co-Director, Programmer',             link: 'ninja_muffin99'},
         {name: 'Kawai Sprite',   desc: 'Musician',                            link: 'kawaisprite'},
         {name: 'evilsk8r',       desc: 'Artist',                              link: 'evilsk8r'}
     ];
 
-    var devs:FlxAlphabetGroup;
+    var devs:Array<Alphabet> = [];
     var desc:Alphabet;
 
     override function create() {
         add(Sprite('menuDesat').setColor(0xFFea71fd));
 
-        add(devs = new FlxAlphabetGroup());
-
         var curY = 60.;
 
         for (i in 0...credits.length) {
             var credit = new Alphabet(isTitle(i) ? 90 : 135, curY, credits[i].name, isTitle(i) ? .8 : .7, isTitle(i));
-            devs.add(credit).ID = i;
+            add(credit).ID = i;
+            devs.push(credit);
 
             curY += 50 + credits[i].add ?? 0;
 
@@ -38,16 +37,15 @@ class CreditsState extends MenuState {
 
         add(desc = new Alphabet(30, 650, credits[curSelected].desc, .7, false));
 
-        onPress(accept, () -> FlxG.openURL('x.com/${credits[curSelected].link}'));
+        onPress(accept, FlxG.openURL('x.com/${credits[curSelected].link}'));
 
-        onPress(back, () -> {
+        onPress(back, {
             blockControls = true;
             playSound('cancelMenu', .6);
             switchState(MainMenuState.new);
         });
 
-        for (dir => val in [up => -1, down => 1]) onPress(dir, () -> changeItem(val));
-
+        for (dir => val in [up => -1, down => 1]) onPress(dir, changeItem(val));
         changeItem();
 
         super.create();
@@ -57,7 +55,7 @@ class CreditsState extends MenuState {
         if (huh != 0) playSound('scrollMenu', .4);
         do (curSelected = (curSelected + huh + credits.length) % credits.length) while (isTitle(curSelected));
 
-        for (i => credit in devs.members) if (!credit.bold) credit.alpha = i == curSelected ? 1 : .6;
+        for (i => credit in devs) if (!credit.bold) credit.alpha = i == curSelected ? 1 : .6;
         desc.text = credits[curSelected].desc;
     }
 

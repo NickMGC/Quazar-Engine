@@ -1,0 +1,30 @@
+{
+    "events": [
+        {
+            "time": 12800,
+            "data": [
+                {
+                    "name": "Move Camera",
+                    "values": {
+                        "target": "dad",
+                        "duration": 1,
+                        "ease": "QuadOut"
+                    }
+                }
+            ]
+        },
+        {
+            "time": 14400,
+            "data": [
+                {
+                    "name": "Move Camera",
+                    "values": {
+                        "target": "bf",
+                        "duration": 1,
+                        "ease": "QuadOut"
+                    }
+                }
+            ]
+        }
+    ]
+}

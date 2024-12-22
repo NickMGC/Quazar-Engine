@@ -28,4 +28,17 @@ class Alphabet extends flixel.text.FlxBitmapText {
 		this.fieldWidth = fieldWidth;
 		return this;
 	}
+
+	//flixel 5.9.0 fucked up and didnt account for centered text so heres a band-aid fix for now, will make a pr later
+	#if (flixel >= "5.9.0")
+	override function computeTextSize() {
+		var txtWidth = textWidth;
+		final txtHeight = textHeight + 2 * padding;
+
+		txtWidth = autoSize ? txtWidth + (padding * 2) : fieldWidth;
+
+		frameWidth = (txtWidth == 0) ? 1 : txtWidth;
+		frameHeight = (txtHeight == 0) ? 1 : txtHeight;
+	}
+	#end
 }

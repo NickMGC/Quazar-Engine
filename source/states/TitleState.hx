@@ -20,9 +20,7 @@ class TitleState extends BeatState {
         playMusic('freakyMenu', 0).fadeIn(4, 0, .5);
 
         add(gf = Sparrow(510, 20, 'title/title')
-        .addPrefix('left', 'left', 24, false)
-        .addPrefix('right', 'right', 24, false)
-        .playAnim('left').finishAnim());
+        .addPrefix('left', 'left', 24, false).addPrefix('right', 'right', 24, false).playAnim('left').finishAnim());
 
         add(logo = Sparrow(-140, -100, 'title/title').addPrefix('bump', 'logo bumpin', 24, false).playAnim('bump').finishAnim());
 
@@ -32,20 +30,18 @@ class TitleState extends BeatState {
         ngSpr.screenCenter(X);
 
         add(titleText = Sparrow(137, 575, 'title/title')
-        .addPrefix('idle', 'ENTER IDLE0', 24, false)
-        .addPrefix('press', 'ENTER PRESSED0', 24)
-        .playAnim('idle'));
+        .addPrefix('idle', 'ENTER IDLE0', 24, false).addPrefix('press', 'ENTER PRESSED0', 24).playAnim('idle'));
 
         add(text = new Alphabet().setAlign(CENTER, 1280));
         text.lineSpacing = -15;
-        text.screenCenter();
+        text.screenCenter(Y);
 
-        for (obj in [logo, titleText, gf]) obj.kill();
+        for (obj in [logo, gf, titleText]) obj.kill();
         ngSpr.active = ngSpr.visible = false;
 
-        TransitionState.skipNextTransOut = true;
+        skipNextTransOut = true;
 
-        onPress(accept, skipIntro);
+        onPress(accept, skipIntro());
 
         super.create();
     }
@@ -54,13 +50,13 @@ class TitleState extends BeatState {
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (!blockControls) {
-            if ((titleTimer += elapsed) > 2) titleTimer -= 2;
-				
-			final timer = FlxEase.quadInOut(titleTimer >= 1 ? (-titleTimer) + 2 : titleTimer);
-			titleText.color = FlxColor.interpolate(0xFF33FFFF, 0xFF3333CC, timer);
-			titleText.alpha = FlxMath.lerp(1, .64, timer);
-		}
+        if (blockControls) return;
+
+        titleTimer = (titleTimer + elapsed) % 2;
+
+        final timer = FlxEase.quadInOut(titleTimer > 1 ? 2 - titleTimer : titleTimer);
+		titleText.color = FlxColor.interpolate(0xFF33FFFF, 0xFF3333CC, timer);
+		titleText.alpha = FlxMath.lerp(1, .65, timer);
 	}
 
     override function onBeat() {
@@ -102,9 +98,9 @@ class TitleState extends BeatState {
 
     function skipIntro() {
         if (!skippedIntro) {
-            FlxG.camera.flash(FlxColor.WHITE, 1);
+            camera.flash(FlxColor.WHITE, 1);
 
-            for (obj in [logo, titleText, gf]) obj.revive();
+            for (obj in [logo, gf, titleText]) obj.revive();
             for (obj in [text, ngSpr]) obj = FlxDestroyUtil.destroy(obj);
 
             skippedIntro = true;
@@ -113,10 +109,10 @@ class TitleState extends BeatState {
 
         blockControls = true;
 
-        FlxG.camera.flash(Data.flashingLights ? FlxColor.WHITE : 0x4CFFFFFF, 1);
+        camera.flash(Data.flashingLights ? FlxColor.WHITE : 0x4CFFFFFF, 1);
         playSound('confirmMenu', .7);
 
-        if (!Data.flashingLights) titleText.active = false;
+        titleText.active = Data.flashingLights;
         titleText.playAnim('press');
         titleText.color = FlxColor.WHITE;
         titleText.alpha = 1;
