@@ -4,7 +4,11 @@ package core.ui;
 	override function create() {
 		persistentUpdate = persistentDraw = true;
 
-		if(!skipNextTransOut) add(new Transition(false));
+		if(!skipNextTransOut) {
+			var trans = new Transition();
+			Transition.finish = () -> trans = FlxDestroyUtil.destroy(trans);
+			add(trans);
+		}
 		skipNextTransOut = blockControls = false;
 
 		super.create();
@@ -23,12 +27,15 @@ package core.ui;
 			return super.startOutro(onOutroComplete);
 		}
 
-		add(new Transition(true, onOutroComplete));
+		add(new Transition(true));
+		Transition.finish = onOutroComplete;
 	}
 }
 
 class Transition extends flixel.addons.display.FlxBackdrop {
-	public function new(?transIn = false, ?finish:Void -> Void) {
+	public static var finish:Void -> Void;
+
+	public function new(?transIn = false) {
 		super(Path.image('ui/transition'), Y);
 
 		camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
@@ -41,8 +48,6 @@ class Transition extends flixel.addons.display.FlxBackdrop {
 		final targetPos = transIn ? center : -offscreen;
 		final ease = transIn ? FlxEase.circIn : FlxEase.circOut;
 
-		x = transIn ? offscreen : center;
-
-		FlxTween.num(x, targetPos, .3, {ease: ease, onComplete: (_) -> (!skipNextTransOut && finish == null) ? FlxDestroyUtil.destroy(this) : finish(), startDelay: transIn ? 0 : .15}, (v) -> x = v);
+		FlxTween.num(transIn ? offscreen : center, targetPos, .3, {ease: ease, onComplete: (_) -> finish(), startDelay: transIn ? 0 : .15}, (v) -> x = v);
 	}
 }
