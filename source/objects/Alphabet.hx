@@ -42,3 +42,5 @@ class Alphabet extends flixel.text.FlxBitmapText {
 	}
 	#end
 }
+
+typedef FlxAlphabetGroup = FlxTypedSpriteGroup<Alphabet>;

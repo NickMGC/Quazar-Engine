@@ -51,11 +51,10 @@ package core;
 	static function reset() {
 		song = null;
 
-		time = bpm.cur = bpm.last = bpm.offset = offset = lastTime = timings.measure.cur = timings.beat.cur = timings.step.cur = 0;
-		timings.measure.length = timings.beat.length = timings.step.length = 0;
+		timings.measure.length = timings.beat.length = timings.step.length = time = bpm.cur = bpm.last = bpm.offset = offset = lastTime = timings.measure.cur = timings.beat.cur = timings.step.cur = 0;
         timings.measure.last = timings.beat.last = timings.step.last = -1;
         paused = true;
 	}
 
-	@:noCompletion private inline static function set_song(snd) return song = snd ?? FlxG.sound.music;
+	@:noCompletion private inline static function set_song(snd) return song = snd ?? Music;
 }

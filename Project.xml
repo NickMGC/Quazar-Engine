@@ -59,4 +59,5 @@
 
 	<icon path="art/icon.png"/>
 	<assets path="art/missing.png" rename="flixel/images/logo/default.png" embed="true"/>
+	<assets path="art/beep.ogg" rename="flixel/assets/sounds/beep.ogg" embed="true" />
 </project>

@@ -3,8 +3,7 @@ package states;
 class MainMenuState extends MenuState {
     static var curSelected = 0;
 
-    static final options:Array<NextState> = [PlayState.new, testing.AlphabetAlign.new, CreditsState.new, states.options.OptionsState.new];
-
+    static final options:Array<NextState> = [PlayState.new, FreeplayState.new, CreditsState.new, OptionsState.new];
     var menuItems:Array<FlxSprite> = [];
 
     override function create() {
@@ -17,20 +16,20 @@ class MainMenuState extends MenuState {
             menuItems.push(menu);
         }
 
-        onPress(accept, {
+        onPress(Key.accept, {
             blockControls = true;
-            playSound('confirmMenu', .7);
+            Sound.play(Path.sound('confirmMenu'), .7);
             FlxFlicker.flicker(menuItems[curSelected], 1, .06, false, false, (_) -> switchState(options[curSelected]));
         });
 
-        for (dir => val in [up => -1, down => 1]) onPress(dir, changeItem(val));
+        for (dir => val in [Key.up => -1, Key.down => 1]) onPress(dir, changeItem(val));
         changeItem();
 
         super.create();
     }
 
     function changeItem(huh = 0) {
-        if (huh != 0) playSound('scrollMenu', .4);
+        if (huh != 0) Sound.play(Path.sound('scrollMenu'), .4);
 
         curSelected = (curSelected + huh + menuItems.length) % menuItems.length;
 

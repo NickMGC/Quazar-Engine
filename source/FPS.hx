@@ -1,6 +1,7 @@
 package;
 
-import flixel.FlxG;
+import flixel.util.FlxStringUtil.formatBytes as format;
+import openfl.system.System.totalMemoryNumber as GCmem;
 
 class FPS extends openfl.text.TextField {
 	@:noCompletion var times:Array<Float> = [];
@@ -19,8 +20,6 @@ class FPS extends openfl.text.TextField {
 
 		multiline = true;
 		autoSize = LEFT;
-
-		visible = Data.showFPS;
 	}
 
 	override function __enterFrame(deltaTime:Float) {
@@ -33,7 +32,7 @@ class FPS extends openfl.text.TextField {
 			return;
 		}
 
-		text = 'FPS: ${times.length < FlxG.drawFramerate ? times.length : FlxG.drawFramerate}\nMemory: ${flixel.util.FlxStringUtil.formatBytes(cast(openfl.system.System.totalMemory, UInt))}';
+		text = 'FPS: ${times.length < FlxG.drawFramerate ? times.length : FlxG.drawFramerate}\nGC Memory: ${format(GCmem)}';
 
 		deltaTimeout = 0;
 	}

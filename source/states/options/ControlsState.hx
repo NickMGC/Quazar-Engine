@@ -3,11 +3,11 @@ package states.options;
 import flixel.input.keyboard.FlxKey;
 import core.controls.KeyFormat;
 
-typedef MenuItem = {name:String, ?varName:String, ?type:String, ?add:Float, ?scale:Float, ?callback:() -> Void}
+typedef MenuItem = {name:String, ?varName:String, ?type:String, ?add:Float, ?scale:Float, ?callback:Void -> Void}
 
 class ControlsState extends MenuState {
-    var keyGroup:FlxAlphabetGroup;
-    var optionGroup:FlxAlphabetGroup;
+    var keyGroup:Array<Alphabet> = [];
+    var optionGroup:Array<Alphabet> = [];
 
     var curSelected = 2;
 
@@ -44,34 +44,33 @@ class ControlsState extends MenuState {
         add(Sprite('menuDesat').setColor(0xFFea71fd));
         add(Graphic(90, 120, 1100, 4, FlxColor.BLACK));
 
-        add(keyGroup = new FlxAlphabetGroup());
-        add(optionGroup = new FlxAlphabetGroup());
-
         options[12].callback = resetControls;
 
-        var curY = 60.;
         for (i in 0...options.length) {
-            var option = new Alphabet(options[i].type == 'title' ? 100 : 135, curY, options[i].name, options[i].scale ?? .5, options[i].type == 'title');
-            curY += 30 + options[i].add ?? 0;
+            var option = new Alphabet(options[i].type == 'title' ? 100 : 135, 60, options[i].name, options[i].scale ?? .5, options[i].type == 'title');
+            for (j in 0...i) option.y += 30 + options[j].add ?? 0;
+            option.ID = i;
+            add(option);
+            optionGroup.push(option);
 
             if (options[i].type == 'keybind') {
                 var binds = Data.keyBinds[options[i].varName];
                 final key = new Alphabet(0, option.y, '[${KeyFormat.display(binds[0])}, ${KeyFormat.display(binds[1])}]', .5, false).setAlign(RIGHT, 1280);
                 key.alpha = .6;
-                keyGroup.add(key).ID = i;
+                key.ID = i;
+                add(key);
+                keyGroup.push(key);
             }
-
-            optionGroup.add(option).ID = i;
         }
 
-        optionGroup.members[0].screenCenter(X);
-        for(i in [11, 12]) optionGroup.members[i].x = 100;
+        optionGroup[0].screenCenter(X);
+        for(i in [11, 12]) optionGroup[i].x = 100;
 
-        onPress(accept, {
+        onPress(Key.accept, {
             if (!binding && options[curSelected].type != 'title') {
                 var option = options[curSelected];
 
-                playSound('scrollMenu', .4);
+                Sound.play(Path.sound('scrollMenu'), .4);
         
                 if (option.type == 'keybind') {
                     binding = firstBind = true;
@@ -81,31 +80,31 @@ class ControlsState extends MenuState {
                     defaultBinds = Data.keyBinds[option.varName];
                     updateBind('_', defaultBinds[1]);
 
-                    optionGroup.members[curSelected].alpha = .6;
-                    for (key in keyGroup.members) if (key?.ID == curSelected) key.alpha = 1;
+                    optionGroup[curSelected].alpha = .6;
+                    for (key in keyGroup) if (key?.ID == curSelected) key.alpha = 1;
         
                 } else if (option.type == 'action' && option.callback != null) option.callback();
             }
         });
 
-        onPress(back, {
+        onPress(Key.back, {
             if (!binding) {
                 blockControls = true;
                 Settings.save();
                 Settings.load();
                 switchState(OptionsState.new);
-                playSound('cancelMenu', .6);
+                Sound.play(Path.sound('cancelMenu'), .6);
             }
         });
 
-        for (dir => val in [up => -1, down => 1]) onPress(dir, if (!binding) changeItem(val));
+        for (dir => val in [Key.up => -1, Key.down => 1]) onPress(dir, if (!binding) changeItem(val));
 
         changeItem();
 
         super.create();
     }
 
-    function updateBind(bind1:FlxKey, bind2:FlxKey) for (key in keyGroup.members) if (key?.ID == curSelected) key.text = '[${KeyFormat.display(bind1)}, ${KeyFormat.display(bind2)}]';
+    function updateBind(bind1:FlxKey, bind2:FlxKey) for (key in keyGroup) if (key?.ID == curSelected) key.text = '[${KeyFormat.display(bind1)}, ${KeyFormat.display(bind2)}]';
 
     override function update(elapsed:Float) {
         super.update(elapsed);
@@ -129,8 +128,9 @@ class ControlsState extends MenuState {
         binding = false;
 
         updateBind(defaultBinds[0], defaultBinds[1]);
-        optionGroup.members[curSelected].alpha = 1;
-        playSound('cancelMenu', .6);
+        optionGroup[curSelected].alpha = 1;
+        for (key in keyGroup) if (key?.ID == curSelected) key.alpha = .6;
+        Sound.play(Path.sound('cancelMenu'), .6);
     }
 
     function bind(key:Int) {
@@ -143,24 +143,24 @@ class ControlsState extends MenuState {
 
             final binds = Data.keyBinds[options[curSelected].varName] = [tempBind1, key];
             updateBind(binds[0], binds[1]);
-            optionGroup.members[curSelected].alpha = 1;
-            for (key in keyGroup.members) if (key?.ID == curSelected) key.alpha = .6;
+            optionGroup[curSelected].alpha = 1;
+            for (key in keyGroup) if (key?.ID == curSelected) key.alpha = .6;
         }
     }
 
     function resetControls() {
         Settings.resetKeys();
 
-        for (key in keyGroup.members) if (key != null) {
+        for (key in keyGroup) if (key != null) {
             final newBinds = Data.keyBinds[options[key.ID].varName];
             key.text = '[${KeyFormat.display(newBinds[0])}, ${KeyFormat.display(newBinds[1])}]';
         }
     }
 
     function changeItem(change:Int = 0) {
-        if (change != 0) playSound('scrollMenu', .4);
+        if (change != 0) Sound.play(Path.sound('scrollMenu'), .4);
         do (curSelected = (curSelected + change + options.length) % options.length) while (options[curSelected].type == 'title');
 
-        for (option in optionGroup.members) if (options[option?.ID].type != 'title') option.alpha = option.ID == curSelected ? 1 : .6;
+        for (option in optionGroup) if (options[option?.ID].type != 'title') option.alpha = option.ID == curSelected ? 1 : .6;
     }
 }

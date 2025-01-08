@@ -10,10 +10,7 @@ package objects.core;
         sustain.antialiasing = false;
         add(sustain);
 
-        add(
-            Sparrow(0, sustain.y + sustain.height - 1, 'game/noteSkins/notes')
-            .addPrefix('$dir end', '${dir} end0', 24).playAnim(dir)
-            .setOrigin().setOffset()
-        );
+        add(Sparrow(0, sustain.y + sustain.height - 1, 'game/noteSkins/notes')
+        .addPrefix('$dir end', '${dir} end0', 24).playAnim(dir).setOrigin().setOffset());
     }
 }

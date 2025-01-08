@@ -6,7 +6,7 @@ package core.ui;
 
 		if(!skipNextTransOut) {
 			var trans = new Transition();
-			Transition.finish = () -> trans = FlxDestroyUtil.destroy(trans);
+			trans.finish = () -> trans = FlxDestroyUtil.destroy(trans);
 			add(trans);
 		}
 		skipNextTransOut = blockControls = false;
@@ -27,18 +27,19 @@ package core.ui;
 			return super.startOutro(onOutroComplete);
 		}
 
-		add(new Transition(true));
-		Transition.finish = onOutroComplete;
+		var trans = new Transition(true);
+		trans.finish = onOutroComplete;
+		add(trans);
 	}
 }
 
 class Transition extends flixel.addons.display.FlxBackdrop {
-	public static var finish:Void -> Void;
+	public var finish:Void -> Void;
 
 	public function new(?transIn = false) {
 		super(Path.image('ui/transition'), Y);
 
-		camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
 		this.setScale(scale.x / camera.zoom, scale.y / camera.zoom).setScrollFactor();
 

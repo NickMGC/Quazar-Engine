@@ -9,10 +9,8 @@ import flixel.input.keyboard.FlxKey;
 		PERIOD => '.', COMMA => ',', SEMICOLON => ';', GRAVEACCENT => '`', LBRACKET => '[', RBRACKET => ']', QUOTE => "'", NONE => '--'
 	];
 
-	static function display(key:FlxKey):String return keys.exists(key) ? keys[key] : getKey(key.toString().toLowerCase());
+	static function display(key:FlxKey) return keys.exists(key) ? keys[key] : getKey(key);
 
-	private static function getKey(key:String):String
-		return if (key == 'null') '--';
-		else if (key.contains('_')) [for (split in key.split('_')) Util.capitalize(split)].join(' ');
-		else Util.capitalize(key);
+	private static function getKey(key:String)
+		return key == 'null' ? '--' : key.contains('_') ? Util.capitalize(key).replace('_', ' ') : Util.capitalize(key);
 }

@@ -27,6 +27,18 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
         return sprite;
     }
 
+    @:inheritDoc(flixel.animation.FlxAnimationController.pause)
+    inline static function pauseAnim<T:FlxSprite>(sprite:T):T {
+        sprite.animation.pause();
+        return sprite;
+    }
+
+    @:inheritDoc(flixel.animation.FlxAnimationController.resume)
+    inline static function resumeAnim<T:FlxSprite>(sprite:T):T {
+        sprite.animation.resume();
+        return sprite;
+    }
+
 	inline static function onAnimFinish<T:FlxSprite>(sprite:T, callback:(animName:String) -> Void):T {
         #if (flixel >= "5.9.0")
         sprite.animation.onFinish.add(callback);
@@ -99,6 +111,30 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
      */
     inline static function setScrollFactor<T:FlxSprite>(sprite:T, ?x:Float, ?y:Float):T {
         sprite.scrollFactor.set(x, y);
+        return sprite;
+    }
+
+    /** Sets the desired alpha.*/
+    inline static function setAlpha<T:FlxSprite>(sprite:T, alpha:Float):T {
+        sprite.alpha = alpha;
+        return sprite;
+    }
+
+    /** Sets the visibility on an object.*/
+    inline static function setVisible<T:FlxSprite>(sprite:T, visible:Bool):T {
+        sprite.visible = visible;
+        return sprite;
+    }
+
+    /** Sets the antialiasing.*/
+    inline static function setAntialiasing<T:FlxSprite>(sprite:T, antialiasing:Bool):T {
+        sprite.antialiasing = antialiasing;
+        return sprite;
+    }
+
+    /** Blending modes, just like Photoshop or whatever, e.g. `"multiply"`, `"screen"`, etc.*/
+    inline static function setBlendMode<T:FlxSprite>(sprite:T, blend:openfl.display.BlendMode):T {
+        sprite.blend = blend;
         return sprite;
     }
 

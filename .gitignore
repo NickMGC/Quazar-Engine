@@ -2,9 +2,6 @@
 export/*
 tools/*
 
-### teehee
-docs/*
-
 .vscode/*
 .haxelib/
 .github/

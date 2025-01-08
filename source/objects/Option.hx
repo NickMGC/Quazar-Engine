@@ -1,80 +1,88 @@
 package objects;
 
-//taken from psych because my monkey brain doesnt know how to make it any better
-//TODO figure out how to do this without yoinking from psych
 @:publicFields class Option {
-	public var child:Alphabet;
-	public var text(get, set):String;
+	var name:String;
+	var desc:String;
 
-	var onChange:() -> Void = null;
+	private var variable:String;
+	var type:OptionType;
 
-	var curOption = 0;
+	var defaultValue:Dynamic;
+	var onChange:Void -> Void;
 
-	var name = 'Unknown';
-	var desc = '';
+	var curOption:Int = 0;
 
-	private var variable:String = null;
-
-	var type = 'bool';
-
-	var options:Array<String> = null; //string only
-	var defaultValue:Dynamic = null;
+	//alphabet
+	var child:Alphabet;
+	var text(get, set):String;
 
 	//float/percent
-	var displayFormat = '%v';
-	var changeValue:Dynamic = 1;
-	var minValue:Dynamic = null;
-	var maxValue:Dynamic = null;
-	var scrollSpeed = 50.;
-	var decimals = 1;
+	var changeValue:Float = 1;
+	var decimals:Int = 1;
 
-    function new(name:String, ?desc:String, ?variable:String, ?type = 'bool', ?options:Array<String> = null) {
+	var minValue:Float;
+	var maxValue:Float;
+
+	var displayFormat = '%v';
+
+    function new(name:String, ?desc:String, ?variable:String, ?type:OptionType) {
         this.name = name;
         this.desc = desc;
         this.variable = variable;
         this.type = type;
-		this.options = options;
 
-        this.defaultValue = getValue();
+		if (type == null) return;
 
-        switch(type) {
-			case 'bool':
-				if(defaultValue == null) defaultValue = false;
-			case 'int' | 'float':
-				if(defaultValue == null) defaultValue = 0;
-			case 'percent':
-				if(defaultValue == null) defaultValue = 1;
+		defaultValue = switch(type) {
+			case BOOL: false;
+			case INT: 0;
+			case FLOAT: .0;
+			case PERCENT:
 				displayFormat = '%v%';
 				changeValue = .01;
 				minValue = 0;
 				maxValue = 1;
-				scrollSpeed = .5;
 				decimals = 2;
-			case 'string':
-				if(defaultValue == null) defaultValue = '';
-				if(options.length > 0) defaultValue = options[0];
+				1.;
+			case STRING(options):
+				final num = options.indexOf(getValue());
+                if(num > -1) curOption = num;
+				options.length > 0 ? options[0] : '';
 		}
 
-        try {
-            if(getValue() == null) setValue(defaultValue);
-
-            if (type == 'string') {
-                var num = options.indexOf(getValue());
-                if(num > -1) curOption = num;
-            }
-        } catch(e) {}
+		if (getValue() == null) setValue(defaultValue);
     }
-
-    inline function change() if(onChange != null) onChange();
 
     dynamic function getValue():Dynamic return Reflect.getProperty(Data, variable);
 	dynamic function setValue(value:Dynamic) return Reflect.setProperty(Data, variable, value);
 
-	function addProperties(?changeValue:Dynamic = 1, ?minValue:Dynamic, ?maxValue:Dynamic, ?scrollSpeed = 50., ?decimals = 1):Option {
+	function updateValue(huh = 0) {
+        if (type == null) return;
+
+		final holdValue = FlxMath.bound((getValue() + (huh * changeValue)), minValue, maxValue);
+
+        setValue(switch(type) {
+			case INT: Math.round(holdValue);
+			case FLOAT | PERCENT: FlxMath.roundDecimal(holdValue, decimals);
+			case STRING(options): options[(curOption = (curOption + huh + options.length) % options.length)];
+			default: getValue();
+		});
+
+        updateText();
+		if(onChange != null) onChange();
+    }
+
+    function updateText() {
+		var val:Dynamic = getValue();
+		if(type == PERCENT) val *= 100;
+
+		text = displayFormat.replace('%v', val).replace('%d', defaultValue);
+	}
+
+	function addProperties(?changeValue:Float = 1, ?minValue:Float, ?maxValue:Float, ?decimals:Int = 1):Option {
 		this.changeValue = changeValue;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
-		this.scrollSpeed = scrollSpeed;
 		this.decimals = decimals;
 
 		return this;
@@ -82,8 +90,10 @@ package objects;
 
 	private function get_text() return child.text ?? null;
 
-	private function set_text(newValue = '') {
+	private function set_text(newValue:String) {
 		if(child != null) child.text = newValue;
 		return null;
 	}
 }
+
+enum OptionType {BOOL; INT; FLOAT; PERCENT; STRING(options:Array<String>);}

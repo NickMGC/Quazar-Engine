@@ -20,14 +20,11 @@ class CreditsState extends MenuState {
     override function create() {
         add(Sprite('menuDesat').setColor(0xFFea71fd));
 
-        var curY = 60.;
-
         for (i in 0...credits.length) {
-            var credit = new Alphabet(isTitle(i) ? 90 : 135, curY, credits[i].name, isTitle(i) ? .8 : .7, isTitle(i));
-            add(credit).ID = i;
+            var credit = new Alphabet(isTitle(i) ? 90 : 135, 60, credits[i].name, isTitle(i) ? .8 : .7, isTitle(i));
+            for (j in 0...i) credit.y += 50 + credits[j].add ?? 0;
+            add(credit);
             devs.push(credit);
-
-            curY += 50 + credits[i].add ?? 0;
 
             if (!isTitle(i))
                 add(Sparrow(credit.x + credit.width + 10, credit.y - 5, 'credits/credits').addPrefix(credits[i].name, credits[i].name, 0, false).playAnim(credits[i].name));
@@ -37,22 +34,22 @@ class CreditsState extends MenuState {
 
         add(desc = new Alphabet(30, 650, credits[curSelected].desc, .7, false));
 
-        onPress(accept, FlxG.openURL('x.com/${credits[curSelected].link}'));
+        onPress(Key.accept, FlxG.openURL('x.com/${credits[curSelected].link}'));
 
-        onPress(back, {
+        onPress(Key.back, {
             blockControls = true;
-            playSound('cancelMenu', .6);
+            Sound.play(Path.sound('cancelMenu'), .6);
             switchState(MainMenuState.new);
         });
 
-        for (dir => val in [up => -1, down => 1]) onPress(dir, changeItem(val));
+        for (dir => val in [Key.up => -1, Key.down => 1]) onPress(dir, changeItem(val));
         changeItem();
 
         super.create();
     }
 
     function changeItem(huh = 0) {
-        if (huh != 0) playSound('scrollMenu', .4);
+        if (huh != 0) Sound.play(Path.sound('scrollMenu'), .4);
         do (curSelected = (curSelected + huh + credits.length) % credits.length) while (isTitle(curSelected));
 
         for (i => credit in devs) if (!credit.bold) credit.alpha = i == curSelected ? 1 : .6;

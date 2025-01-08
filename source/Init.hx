@@ -1,6 +1,6 @@
 package;
 
-import openfl.events.UncaughtErrorEvent;
+import openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR as ERROR;
 
 import haxe.CallStack;
 
@@ -10,16 +10,13 @@ class Init extends flixel.FlxState {
 	override function create() {
 		@:privateAccess FlxG.save.bind('QuazarEngine', '${FlxG.stage.application.meta.get('company')}/${flixel.util.FlxSave.validate(FlxG.stage.application.meta.get('file'))}');
 
-		@:functionCode("
-			#include <windows.h>
-			setProcessDPIAware()
-		")
+		@:functionCode("#include <windows.h>\nsetProcessDPIAware()")
 
-		openfl.Lib.current.stage.align = "tl";
-		openfl.Lib.current.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
+		openfl.Lib.current.stage.align = 'tl';
+		openfl.Lib.current.stage.scaleMode = NO_SCALE;
 
 		openfl.Lib.current.stage.application.window.onClose.add(Settings.save);
-		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, e -> {
+		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(ERROR, e -> {
 			var errMsg = '';
 
 			for (item in CallStack.exceptionStack(true)) {

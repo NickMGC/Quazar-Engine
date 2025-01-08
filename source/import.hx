@@ -30,7 +30,7 @@ import core.controls.Controls.blockControls;
 
 import macros.ControlsMacro.*;
 
-import core.controls.Binds.*;
+import core.controls.Binds as Key;
 
 
 //Objects
@@ -38,6 +38,8 @@ import objects.*;
 import objects.core.*;
 
 import states.*;
+import substates.*;
+import states.options.*;
 
 
 //Flixel
@@ -61,7 +63,6 @@ import flixel.effects.FlxFlicker;
 import flixel.group.*;
 import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.group.FlxAlphabetGroup;
 
 using flixel.util.FlxStringUtil;
 

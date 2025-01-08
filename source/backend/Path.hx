@@ -5,14 +5,14 @@ import flixel.graphics.FlxGraphic;
 import flixel.system.FlxAssets;
 
 import openfl.display.BitmapData;
-import openfl.media.Sound;
+import openfl.media.Sound as OpenFLSound;
 
 import sys.FileSystem;
 
 @:keep @:publicFields class Path {
 	static var localAssets:Array<String> = [];
 	static var trackedImages:Map<String, FlxGraphic> = [];
-	static var trackedAudio:Map<String, Sound> = [];
+	static var trackedAudio:Map<String, OpenFLSound> = [];
 
 	static var exclusions:Array<String> = [
 		'assets/music/freakyMenu.ogg', 'assets/music/breakfast.ogg',
@@ -47,7 +47,7 @@ import sys.FileSystem;
 
 	static function audio(key:String) {
 		localAssets.push(key);
-		if (!trackedAudio.exists(key)) trackedAudio.set(key, Sound.fromFile(get('$key.ogg')) ?? FlxAssets.getSound('flixel/sounds/beep'));
+		if (!trackedAudio.exists(key)) trackedAudio.set(key, OpenFLSound.fromFile(get('$key.ogg')) ?? FlxAssets.getSound('flixel/sounds/beep'));
 		return trackedAudio[key];
     }
 
@@ -72,21 +72,21 @@ import sys.FileSystem;
 	inline static function exists(key:String) return FileSystem.exists(get(key)) ? true : false;
 
 	static function clearUnusedMemory() {
-		removeMapContent(trackedImages, (key) -> FlxG.bitmap.remove(trackedImages[key]));
-		removeMapContent(trackedAudio, (key) -> openfl.Assets.cache.clear(key));
+		for (key in trackedImages.keys()) if (!localAssets.contains(key) && !exclusions.contains(key)) {
+			FlxG.bitmap.remove(trackedImages[key]);
+			trackedImages.remove(key);
+		}
+
+		for (key in trackedAudio.keys()) if (!localAssets.contains(key) && !exclusions.contains(key)) {
+			openfl.Assets.cache.clear(key);
+			trackedAudio.remove(key);
+		}
 
 		openfl.system.System.gc();
 	}
 
 	static function clearStoredMemory() {
-		localAssets = [];
 		clearUnusedMemory();
-	}
-
-	@:noCompletion static function removeMapContent(map:Map<Any, Any>, callback:String -> Void) {
-		for (key in map.keys()) if (!localAssets.contains(key) && !exclusions.contains(key)) {
-			callback(key);
-			map.remove(key);
-		}
+		localAssets = [];
 	}
 }

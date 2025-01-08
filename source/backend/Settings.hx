@@ -48,8 +48,8 @@ import flixel.input.keyboard.FlxKey;
 
 		if (Init.fpsCounter != null) Init.fpsCounter.visible = Data.showFPS;
 
-		if (FlxG.save.data.volume != null) FlxG.sound.volume = FlxG.save.data.volume;
-		if (FlxG.save.data.mute != null) FlxG.sound.muted = FlxG.save.data.mute;
+		if (FlxG.save.data.volume != null) Sound.volume = FlxG.save.data.volume;
+		if (FlxG.save.data.mute != null) Sound.muted = FlxG.save.data.mute;
 
 		trace('Settings loaded');
 	}
