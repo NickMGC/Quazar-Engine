@@ -27,7 +27,7 @@ Quazar Engine is a light weight engine built from ground up, taylored for Source
 2. Install MSVC.
 3. Download libraries listed below:
 
-* HaxeFlixel (flixel, flixel-ui, flixel-addons)
+* HaxeFlixel (flixel, flixel-addons)
 * HxVLC
 
 ## Special Thanks:
