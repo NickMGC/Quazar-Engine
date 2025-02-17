@@ -31,7 +31,7 @@ Quazar Engine is a light weight engine built from ground up, taylored for Source
 * HxVLC
 
 ## Special Thanks:
-* [Cobalt](https://github.com/CobaltBar) - Inspiration and additional coding help
+* [Cobalt](https://github.com/CCobaltDev) - Inspiration and additional coding help
 
 ## Credits:
 * [Nick](https://x.com/nickngc) - Owner, Programmer, Artist, Composer
