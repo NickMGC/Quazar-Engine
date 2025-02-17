@@ -9,6 +9,14 @@ Quazar Engine is a light weight engine built from the ground up, taylored for So
 > [!NOTE]
 > Quazar Engine is very early in development, everything is subject to change. Wouldn't recommend using it until there's a proper release.
 
+## Compiling
+
+1. Download and install [Haxe 4.3.6](https://haxe.org/).
+2. Install MSVC.
+3. Download libraries listed below:
+
+* HaxeFlixel (flixel, flixel-addons)
+* HxVLC
 
 ## Todo list:
 - [ ] Core Gameplay
@@ -20,15 +28,6 @@ Quazar Engine is a light weight engine built from the ground up, taylored for So
 - [ ] Support for different chart formats
 - [ ] The ability to change settings without restarting the song
 - [ ] PlayState soft reload on Song restart/Game Over
-
-## Compiling
-
-1. Download and install [Haxe 4.3.6](https://haxe.org/).
-2. Install MSVC.
-3. Download libraries listed below:
-
-* HaxeFlixel (flixel, flixel-addons)
-* HxVLC
 
 ## Credits:
 * [Nick](https://x.com/nickngc) - Owner, Programmer, Artist, Composer
