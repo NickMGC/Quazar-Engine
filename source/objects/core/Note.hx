@@ -1,21 +1,21 @@
 package objects.core;
 
-@:publicFields class Note extends NoteSprite {
+class Note extends NoteSprite {
     public static final notes = ['left', 'down', 'up', 'right'];
 
-    var time:Float = .0;
-    var length:Float = .0;
-    var index:Int = 0;
+    public var time:Float = 0;
+    public var length:Float = 0;
+    public var index:Int = 0;
 
-    var type:String = '';
+    public var type:String = '';
 
-    var holding = false;
-	var hittable = true;
+    public var holding:Bool = false;
+	public var hittable:Bool = true;
 
-    var sustain:Sustain;
-    var parent:StrumNote;
+    public var sustain:Sustain;
+    public var parent:StrumNote;
 
-    function setup(json:NoteData, line:StrumLine) {
+    public function setup(json:NoteData, line:StrumLine) {
         index = json.index ?? 0;
         length = json.length ?? 0;
         time = json.time ?? 0;

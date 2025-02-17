@@ -16,20 +16,9 @@ class Init extends flixel.FlxState {
 		openfl.Lib.current.stage.scaleMode = NO_SCALE;
 
 		openfl.Lib.current.stage.application.window.onClose.add(Settings.save);
-		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(ERROR, e -> {
-			var errMsg = '';
+		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(ERROR, onError);
 
-			for (item in CallStack.exceptionStack(true)) {
-				switch (item) {
-					case FilePos(s, file, line, column): errMsg += '$file: $line\n';
-					default: Sys.println(item);
-				}
-			}
-	
-			lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
-			trace(errMsg += '\n${e.error}');
-			Sys.exit(1);
-		});
+		FlxG.game.addChild(fpsCounter = new FPS());
 
 		Controls.init();
 		Settings.load();
@@ -42,17 +31,34 @@ class Init extends flixel.FlxState {
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.keys.preventDefaultKeys = [TAB];
 
-		if (FlxG.save.data != null && FlxG.save.data.fullscreen) FlxG.fullscreen = FlxG.save.data.fullscreen;
+		if (FlxG.save.data?.fullscreen) FlxG.fullscreen = FlxG.save.data.fullscreen;
 
 		FlxObject.defaultMoves = false;
 		FlxSprite.defaultAntialiasing = Data.antialiasing;
 
-		#if (allow_video && hxvlc) hxvlc.util.Handle.initAsync((s) -> trace('We got ${s ? '' : 'no '}async video loading')); #end
+		#if (allow_video && hxvlc) hxvlc.util.Handle.initAsync(isInit); #end
 
-		FlxG.game.addChild(fpsCounter = new FPS());
-
-		switchState(states.TitleState.new);
+		switchState(states.TitleMenu.new);
 
 		super.create();
+	}
+
+	function isInit(s:Bool) {
+		trace('We got ${s ? '' : 'no '}async video loading');
+	}
+
+	function onError(e:openfl.events.UncaughtErrorEvent) {
+		var errMsg:String = '';
+
+		for (item in CallStack.exceptionStack(true)) {
+			switch item {
+				case FilePos(s, file, line, column): errMsg += '$file: $line\n';
+				default: Sys.println(item);
+			}
+		}
+
+		lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
+		trace(errMsg += '\n${e.error}');
+		Sys.exit(1);
 	}
 }

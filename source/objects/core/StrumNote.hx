@@ -1,10 +1,10 @@
 package objects.core;
 
-@:publicFields class StrumNote extends NoteSprite {
-    var index = 0;
-    var line:StrumLine;
+class StrumNote extends NoteSprite {
+    public var index:Int = 0;
+    public var line:StrumLine;
 
-    function new(index = 0, line:StrumLine) {
+    public function new(index:Int = 0, line:StrumLine) {
         super(index);
 
         this.index = index;

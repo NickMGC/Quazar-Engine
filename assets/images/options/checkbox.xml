@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TextureAtlas imagePath="checkbox.png">
-	<SubTexture name="unchecked0000" x="43" y="2" width="31" height="31" frameX="-4" frameY="-14" frameWidth="39" frameHeight="45"/>
-	<SubTexture name="checked0000" x="2" y="2" width="39" height="45"/>
+	<SubTexture name="false0000" x="43" y="2" width="31" height="31" frameX="-4" frameY="-14" frameWidth="39" frameHeight="45"/>
+	<SubTexture name="true0000" x="2" y="2" width="39" height="45"/>
 </TextureAtlas>

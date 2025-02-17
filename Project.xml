@@ -6,9 +6,6 @@
 
 	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" orientation="landscape" fullscreen="false" resizable="true" antialiasing="0" allow-high-dpi="true"/>
 
-	<app preloader="flixel.system.FlxPreloader"/>
-	<set name="SWF_VERSION" value="11.8"/>
-
 	<set name="BUILD_DIR" value="export/debug" if="debug"/>
 	<set name="BUILD_DIR" value="export/release" unless="debug"/>
 
@@ -27,13 +24,11 @@
 	<!-- Libs -->
 
 	<haxelib name="flixel"/>
-	<haxelib name="flixel-ui"/>
 	<haxelib name="flixel-addons"/>
 
 	<!-- <haxelib name="flxanimate"/> -->
 
 	<haxelib name="hxvlc" if="allow_video"/>
-	<haxedef name="HXC_LIBVLC_LOGGING" if="allow_video debug"/>
 
 
 	<!-- Haxe Defines -->
@@ -52,12 +47,11 @@
 	<haxedef name="FLX_NO_DEBUG" unless="debug"/>
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug"/>
 
-	<haxedef name="HXC_DEBUG_TRACE" if="debug"/>
-
 
 	<!-- Custom -->
 
 	<icon path="art/icon.png"/>
 	<assets path="art/missing.png" rename="flixel/images/logo/default.png" embed="true"/>
 	<assets path="art/beep.ogg" rename="flixel/assets/sounds/beep.ogg" embed="true" />
+
 </project>

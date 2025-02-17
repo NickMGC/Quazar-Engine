@@ -1,99 +1,135 @@
 package objects;
 
-@:publicFields class Option {
-	var name:String;
-	var desc:String;
+import flixel.util.typeLimit.NextState;
 
-	private var variable:String;
-	var type:OptionType;
+class Option {
+    public final name:String;
+    public final desc:String;
+    var data:OptionValue;
 
-	var defaultValue:Dynamic;
-	var onChange:Void -> Void;
+    public var type(get, never):String;
+    public var value(get, never):String;
 
-	var curOption:Int = 0;
+    public var categoryIndex:Int;
 
-	//alphabet
-	var child:Alphabet;
-	var text(get, set):String;
-
-	//float/percent
-	var changeValue:Float = 1;
-	var decimals:Int = 1;
-
-	var minValue:Float;
-	var maxValue:Float;
-
-	var displayFormat = '%v';
-
-    function new(name:String, ?desc:String, ?variable:String, ?type:OptionType) {
+    public function new(name:String, desc:String, data:OptionValue) {
         this.name = name;
         this.desc = desc;
-        this.variable = variable;
-        this.type = type;
-
-		if (type == null) return;
-
-		defaultValue = switch(type) {
-			case BOOL: false;
-			case INT: 0;
-			case FLOAT: .0;
-			case PERCENT:
-				displayFormat = '%v%';
-				changeValue = .01;
-				minValue = 0;
-				maxValue = 1;
-				decimals = 2;
-				1.;
-			case STRING(options):
-				final num = options.indexOf(getValue());
-                if(num > -1) curOption = num;
-				options.length > 0 ? options[0] : '';
-		}
-
-		if (getValue() == null) setValue(defaultValue);
+        this.data = data;
     }
 
-    dynamic function getValue():Dynamic return Reflect.getProperty(Data, variable);
-	dynamic function setValue(value:Dynamic) return Reflect.setProperty(Data, variable, value);
+    public function updateValue(dir:Int = 0):Void data = switch data {
+        case BOOL(value, callback):
+            callback(value = !value);
+            BOOL(value, callback);
 
-	function updateValue(huh = 0) {
-        if (type == null) return;
+        case INT(value, min, max, step, callback):
+            callback(value = Std.int(FlxMath.bound(value + dir * step, min, max)));
+            INT(value, min, max, step, callback);
 
-		final holdValue = FlxMath.bound((getValue() + (huh * changeValue)), minValue, maxValue);
+        case FLOAT(value, min, max, step, decimals, callback):
+            callback(value = FlxMath.roundDecimal(FlxMath.bound(value + dir * step, min, max), decimals));
+            FLOAT(value, min, max, step, decimals, callback);
 
-        setValue(switch(type) {
-			case INT: Math.round(holdValue);
-			case FLOAT | PERCENT: FlxMath.roundDecimal(holdValue, decimals);
-			case STRING(options): options[(curOption = (curOption + huh + options.length) % options.length)];
-			default: getValue();
-		});
+        case PERCENT(value, callback):
+            callback(value = FlxMath.roundDecimal(FlxMath.bound(value + dir * 0.01, 0, 1), 2));
+            PERCENT(value, callback);
 
-        updateText();
-		if(onChange != null) onChange();
+        case STRING(value, options, callback):
+            callback(value = options[(options.indexOf(value) + dir + options.length) % options.length]);
+            STRING(value, options, callback);
+
+        case STATE(value):
+            Controls.block = true;
+            switchState(value);
+            STATE(value);
     }
 
-    function updateText() {
-		var val:Dynamic = getValue();
-		if(type == PERCENT) val *= 100;
+    private function get_value():String return switch data {
+        case BOOL(v, _): '$v';
+        case INT(v, _, _, _, _): '$v';
+        case FLOAT(v, _, _, _, _, _): '$v';
+        case PERCENT(v, _): '${v * 100}%';
+        case STRING(v, _, _): v;
+        case STATE(_): '';
+    }
 
-		text = displayFormat.replace('%v', val).replace('%d', defaultValue);
-	}
+    private function get_type():String return switch data {
+        case BOOL(_, _): 'bool';
+        case INT(_, _, _, _, _): 'int';
+        case FLOAT(_, _, _, _, _, _): 'float';
+        case PERCENT(_, _): 'percent';
+        case STRING(_, _, _): 'string';
+        case STATE(_): 'state';
+    }
 
-	function addProperties(?changeValue:Float = 1, ?minValue:Float, ?maxValue:Float, ?decimals:Int = 1):Option {
-		this.changeValue = changeValue;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
-		this.decimals = decimals;
+    public static function bool(name:String, desc:String, value:Bool, callback:Bool -> Void):Option
+        return new Option(name, desc, BOOL(value, callback));
 
-		return this;
-	}
+    public static function int(name:String, desc:String, value:Int, callback:Int -> Void, step:Int = 1, ?min:Int, ?max:Int):Option
+        return new Option(name, desc, INT(value, min, max, step, callback));
 
-	private function get_text() return child.text ?? null;
+    public static function float(name:String, desc:String, value:Float, callback:Float -> Void, step:Float = 0.1, decimals:Int = 2, ?min:Float, ?max:Float):Option
+        return new Option(name, desc, FLOAT(value, min, max, step, decimals, callback));
 
-	private function set_text(newValue:String) {
-		if(child != null) child.text = newValue;
-		return null;
-	}
+    public static function percent(name:String, desc:String, value:Float, callback:Float -> Void):Option
+        return new Option(name, desc, PERCENT(value, callback));
+
+    public static function string(name:String, desc:String, value:String, options:Array<String>, callback:String -> Void):Option
+        return new Option(name, desc, STRING(value, options, callback));
+
+    public static function state(name:String, desc:String, value:NextState):Option
+        return new Option(name, desc, STATE(value));
 }
 
-enum OptionType {BOOL; INT; FLOAT; PERCENT; STRING(options:Array<String>);}
+class OptionCategory {
+    public var name:String;
+    public var options:Array<Option>;
+
+    public function new(name:String, options:Array<Option>) {
+        this.name = name;
+        this.options = options;
+    }
+}
+
+enum OptionValue {
+    BOOL(value:Bool, callback:Bool -> Void);
+    INT(value:Int, min:Int, max:Int, step:Int, callback:Int -> Void);
+    FLOAT(value:Float, min:Float, max:Float, step:Float, decimals:Int, callback:Float -> Void);
+    PERCENT(value:Float, callback:Float -> Void);
+    STRING(value:String, options:Array<String>, callback:String -> Void);
+    STATE(state:NextState);
+}
+
+class DisplayOption extends FlxSpriteGroup {
+    public var option:Option;
+
+    public var label:Alphabet;
+    public var value:Alphabet;
+
+    public var checkbox:FlxSprite;
+
+    public function new(option:Option, y:Float = 0, id:Int) {
+        super(0, y);
+
+        this.setID(id).option = option;
+
+        add(label = new Alphabet(135, 0, option.name, 0.7, false));
+
+        switch option.type {
+            case 'bool':
+                add(checkbox = Sparrow('options/checkbox', 1110, -2).addPrefix('true', 'true', 0, false).addPrefix('false', 'false', 0, false).playAnim(option.value));
+            case 'float' | 'int' | 'percent' | 'string':
+                add(value = new Alphabet(795, 0, option.value, 0.7, false).setAlign(RIGHT, 500));
+        }
+    }
+
+    public function updateValue():Void switch option.type {
+        case 'bool':
+            checkbox.playAnim(option.value);
+        case 'float' | 'int' | 'percent' | 'string':
+            value.text = option.value;
+    }
+
+    public function setSelected(selected:Bool):Void label.alpha = selected ? 1 : 0.6;
+}

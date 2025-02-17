@@ -1,46 +1,48 @@
 package objects;
 
-class Alphabet extends flixel.text.FlxBitmapText {
-	public var bold = true;
+import flixel.text.FlxBitmapText;
+import flixel.text.FlxBitmapFont;
+import flixel.text.FlxText;
 
-	public function new(?x = .0, ?y = .0, ?text = '', ?scale:Float, ?bold = true, ?align:FlxTextAlign) {
-		super(font);
+class Alphabet extends FlxBitmapText {
+	public var bold:Bool = true;
 
-		this.x = x;
-		this.y = y;
+	public function new(x:Float = 0, y:Float = 0, text:String = '', scale:Float = 1, bold:Bool = true, alignment:FlxTextAlign = LEFT) {
+		super(x, y, text, FlxBitmapFont.fromAngelCode(Path.image('ui/${bold ? 'bold' : 'default'}'), Path.fnt('images/ui/${bold ? 'bold' : 'default'}')));
+
+		this.alignment = alignment;
 		this.bold = bold;
-		this.text = text;
 
-		font = flixel.graphics.frames.FlxBitmapFont.fromAngelCode(Path.image(bold ? 'bold' : 'default'), Path.fnt('images/${bold ? 'bold' : 'default'}'));
+		this.setScale(scale);
 
-		if (scale != null) this.setScale(scale);
-
-		if (bold) autoUpperCase = true;
-		if (align != null) alignment = align;
-
-		letterSpacing = bold ? -5 : -2;
-		antialiasing = Data.antialiasing;
+		if (bold) {
+			autoUpperCase = true;
+			letterSpacing = -5;
+			lineSpacing = -15;
+		} else
+			letterSpacing = -2;
 	}
 
-	public function setAlign(align:FlxTextAlign, fieldWidth:Int):Alphabet {
+	public function setAlign(alignment:FlxTextAlign, fieldWidth:Int):Alphabet {
 		autoSize = false;
-		alignment = align;
+		this.alignment = alignment;
 		this.fieldWidth = fieldWidth;
 		return this;
 	}
 
-	//flixel 5.9.0 fucked up and didnt account for centered text so heres a band-aid fix for now, will make a pr later
-	#if (flixel >= "5.9.0")
+	public function setFieldWidth(fieldWidth:Int):Alphabet {
+		autoSize = false;
+		this.fieldWidth = fieldWidth;
+		return this;
+	}
+
+	//flixel 5.9.0 didnt account for centered text so heres a band-aid fix for now, will make a pr later
 	override function computeTextSize() {
-		var txtWidth = textWidth;
-		final txtHeight = textHeight + 2 * padding;
-
-		txtWidth = autoSize ? txtWidth + (padding * 2) : fieldWidth;
-
+		final finalTxtWidth = textWidth;
+		final txtWidth = autoSize ? finalTxtWidth + padding * 2 : fieldWidth;
+		final txtHeight = textHeight + padding * 2;
+		
 		frameWidth = (txtWidth == 0) ? 1 : txtWidth;
 		frameHeight = (txtHeight == 0) ? 1 : txtHeight;
 	}
-	#end
 }
-
-typedef FlxAlphabetGroup = FlxTypedSpriteGroup<Alphabet>;

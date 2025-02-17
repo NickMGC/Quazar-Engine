@@ -2,21 +2,19 @@
 import sys.*;
 import sys.io.*;
 
-#if flxanimate import flxanimate.*; #end
+import flxanimate.*;
 
 
 //Backend
-import backend.Path;
-import backend.Util;
-import backend.Settings;
+import core.Path;
+import core.Settings;
 
 
 //Handlers
-import handlers.SpriteHandler.*;
-import handlers.AudioHandler.*;
+import tools.SpriteHandler.*;
+using tools.SpriteHandler;
 
-using handlers.SpriteHandler;
-
+import tools.*;
 
 //Core
 import core.Chart;
@@ -25,21 +23,21 @@ import core.*;
 import core.ui.*;
 
 //Controls
-import core.controls.Controls;
-import core.controls.Controls.blockControls;
+import core.Controls;
 
-import macros.ControlsMacro.*;
+import tools.Binds as Key;
 
-import core.controls.Binds as Key;
-
+import core.game.*;
 
 //Objects
 import objects.*;
 import objects.core.*;
 
+import objects.Option;
+import objects.Option.OptionCategory;
+
 import states.*;
 import substates.*;
-import states.options.*;
 
 
 //Flixel
@@ -50,6 +48,7 @@ import flixel.util.*;
 import flixel.util.typeLimit.NextState;
 
 import flixel.FlxG.switchState;
+import flixel.FlxG.resetState;
 
 import flixel.text.*;
 import flixel.text.FlxText;
@@ -71,4 +70,8 @@ using StringTools;
 import flixel.addons.transition.FlxTransitionableState.skipNextTransIn;
 import flixel.addons.transition.FlxTransitionableState.skipNextTransOut;
 
+import flixel.addons.display.FlxBackdrop;
+
 #end
+
+//TODO: organize this mess

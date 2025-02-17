@@ -1,38 +1,36 @@
 package;
 
-import flixel.util.FlxStringUtil.formatBytes as format;
-import openfl.system.System.totalMemoryNumber as GCmem;
+import flixel.util.FlxStringUtil.formatBytes;
 
-class FPS extends openfl.text.TextField {
-	@:noCompletion var times:Array<Float> = [];
+import openfl.system.System.totalMemoryNumber;
 
-	@:noCompletion final now = Sys.time() * 1000;
-	@:noCompletion var deltaTimeout = .0;
+import openfl.text.TextField;
+import openfl.text.TextFormat;
+
+import openfl.utils.Assets;
+
+class FPS extends TextField {
+	@:noCompletion var deltaTimeout:Float = 0;
 
 	public function new() {
 		super();
 
+		defaultTextFormat = new TextFormat(Assets.getFont(Path.font('fredoka.ttf')).fontName, 15, 0xFFFFFF);
+
 		x = y = 10;
 
 		selectable = mouseEnabled = false;
-
-		defaultTextFormat = new openfl.text.TextFormat(openfl.utils.Assets.getFont(Path.font('fredoka.ttf')).fontName, 15, 0xFFFFFF);
-
 		multiline = true;
 		autoSize = LEFT;
 	}
 
 	override function __enterFrame(deltaTime:Float) {
-		times.push(now);
-
-		while (times[0] < now - 1000) times.shift();
-
 		if (deltaTimeout < 100) {
 			deltaTimeout += deltaTime;
 			return;
 		}
 
-		text = 'FPS: ${times.length < FlxG.drawFramerate ? times.length : FlxG.drawFramerate}\nGC Memory: ${format(GCmem)}';
+		text = 'FPS: ${FlxG.drawFramerate}\nGC Memory: ${formatBytes(totalMemoryNumber)}';
 
 		deltaTimeout = 0;
 	}

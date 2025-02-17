@@ -1,25 +1,24 @@
 package objects.core;
 
-@:publicFields class StrumLine extends FlxSpriteGroup {
-	var sustains:FlxTypedSpriteGroup<Sustain>;
+class StrumLine extends FlxSpriteGroup {
+	public var sustains:FlxTypedSpriteGroup<Sustain>;
 
-	var strums:Array<StrumNote> = [];
+	public var strums:Array<StrumNote> = [];
 
-	var notes:FlxTypedSpriteGroup<Note>;
-	var splashes:FlxTypedSpriteGroup<Splash>;
+	public var notes:FlxTypedSpriteGroup<Note>;
+	public var splashes:FlxTypedSpriteGroup<Splash>;
 
-	var autoHit = false;
+	public var autoHit:Bool = false;
 
-	function new(x:Float = 0, y:Float = 0) {
+	public function new(x:Float = 0, y:Float = 0) {
 		super(0, y);
 
 		add(sustains = new FlxTypedSpriteGroup<Sustain>());
 
 		for (i in 0...4) {
-			var strum = new StrumNote(i, this);
-			strum.x = (strum.width + 5) * i;
-			add(strum);
-			strums.push(strum);
+			strums.push(new StrumNote(i, this));
+			strums[i].x = (strums[i].width + 5) * i;
+			add(strums[i]);
 		}
 
 		add(notes = new FlxTypedSpriteGroup<Note>());
