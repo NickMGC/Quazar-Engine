@@ -30,10 +30,10 @@ Quazar Engine is a light weight engine built from the ground up, taylored for So
 * HaxeFlixel (flixel, flixel-addons)
 * HxVLC
 
-## Special Thanks:
-* [Cobalt](https://github.com/CCobaltDev) - Inspiration and additional coding help
-
 ## Credits:
 * [Nick](https://x.com/nickngc) - Owner, Programmer, Artist, Composer
 * [Iccer](https://x.com/iccerDraws) - Artist
 * [Funkin' Crew](https://fridaynightfunkin.wiki.gg/wiki/The_Funkin%27_Crew_Inc.) - Creators of Friday Night Funkin'
+
+## Special Thanks:
+* [Cobalt](https://github.com/CCobaltDev) - Inspiration and additional coding help
