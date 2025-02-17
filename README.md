@@ -4,7 +4,7 @@
 
 
 # Friday Night Funkin'- Quazar Engine
-Quazar Engine is a light weight engine built the from ground up, taylored for Source programmers.
+Quazar Engine is a light weight engine built from the ground up, taylored for Source programmers.
 
 > [!NOTE]
 > Quazar Engine is very early in development, everything is subject to change. Wouldn't recommend using it until there's a proper release.
