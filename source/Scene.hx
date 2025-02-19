@@ -1,4 +1,4 @@
-package core.ui;
+package;
 
 class Scene extends FlxState {
 	override function create() {

@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 class FreeplayMenu extends Scene {
     override function create() {

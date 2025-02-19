@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 import flixel.input.keyboard.FlxKey;
 import tools.KeyFormat;

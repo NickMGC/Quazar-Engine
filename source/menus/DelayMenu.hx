@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 //TODO: redesign this menu
 class DelayMenu extends MusicScene {
@@ -57,6 +57,8 @@ class DelayMenu extends MusicScene {
         }
 
         bf.playAnim('idle', true);
+
+        trace(curBeat);
 
         super.onBeat();
     }

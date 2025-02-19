@@ -1,10 +1,7 @@
 package tools;
 
 import openfl.display.BlendMode;
-import flixel.addons.display.FlxBackdrop;
-import flixel.util.FlxAxes;
 
-//TODO: write description for this
 class SpriteHandler {
     public static function loadImage<T:FlxSprite>(sprite:T, path:String, prefix:String = 'images'):T {
         sprite.loadGraphic(Path.image(path, prefix));
@@ -211,80 +208,6 @@ class SpriteHandler {
      */
     inline public static function setClipRect<T:FlxSprite>(sprite:T, X:Float = 0, Y:Float = 0, Width:Float = 0, Height:Float = 0):T {
         sprite.clipRect = new flixel.math.FlxRect(X, Y, Width, Height);
-        return sprite;
-    }
-
-    /**
-     * Creates a sparrow animated sprite.
-     * @param x       The X-coordinate of the point in space.
-     * @param y       The Y-coordinate of the point in space.
-     * @param path    The path to the image.
-     * @param prefix  The folder the image is located at. Defaults to `"images"`.
-     */
-    static public function Sparrow(path:String, x:Float = 0, y:Float = 0, prefix:String = 'images'):FlxSprite {
-        return new FlxSprite(x, y).loadSparrowFrames(path, prefix);
-    }
-
-
-    /**
-     * Creates a sparrow animated sprite.
-     * @param x       The X-coordinate of the point in space.
-     * @param y       The Y-coordinate of the point in space.
-     * @param path    The path to the image.
-     * @param prefix  The folder the image is located at. Defaults to `"images"`.
-     */
-    static public function Packer(path:String, x:Float = 0, y:Float = 0, prefix:String = 'images'):FlxSprite {
-        return new FlxSprite(x, y).loadPackerFrames(path, prefix);
-    }
-
-    /**
-     * Creates a sparrow animated sprite.
-     * @param x       The X-coordinate of the point in space.
-     * @param y       The Y-coordinate of the point in space.
-     * @param path    The path to the image.
-     * @param prefix  The folder the image is located at. Defaults to `"images"`.
-     */
-    static public function Aseprite(path:String, x:Float = 0, y:Float = 0, prefix:String = 'images'):FlxSprite {
-        return new FlxSprite(x, y).loadAsepriteFrames(path, prefix);
-    }
-
-    /**
-     * Creates a sprite.
-     * @param x       The X-coordinate of the point in space.
-     * @param y       The Y-coordinate of the point in space.
-     * @param path    The path to the image.
-     * @param prefix  The folder the image is located at. Defaults to `"images"`.
-     */
-	static public function Sprite(path:String, x:Float = 0, y:Float = 0, prefix:String = 'images'):FlxSprite {
-        return new FlxSprite(x, y).loadImage(path, prefix).setActive(false);
-    }
-
-    /**
-     * Creates a graphic.
-     * @param x       The X-coordinate of the point in space.
-     * @param y       The Y-coordinate of the point in space.
-     * @param width   The width of the rectangle.
-     * @param height  The height of the rectangle.
-     * @param color   The color of the rectangle.
-     */
-	static public function Graphic(x:Float = 0, y:Float = 0, width:Int, height:Int, color:FlxColor):FlxSprite {
-        return new FlxSprite(x, y).createGraphic(width, height, color).setActive(false);
-    }
-
-    //TODO: document backdrop
-    /**
-     * Creates a backdrop.
-     * @param x       The X-coordinate of the point in space.
-     * @param y       The Y-coordinate of the point in space.
-     * @param path    The path to the image.
-     * @param prefix  The folder the image is located at. Defaults to `"images"`.
-     */
-	static public function Backdrop(x:Float = 0, y:Float = 0, path:String, repeatAxes:FlxAxes = XY, spacingX:Float = 0, spacingY:Float = 0, velocityX:Float = 0, velocityY:Float = 0, prefix:String = 'images'):FlxBackdrop {
-        var sprite = new FlxBackdrop(Path.image(path, prefix), repeatAxes, spacingX, spacingY).setVelocity(velocityX, velocityY).setActive(false);
-        sprite.setPosition(x, y);
-        sprite.updateHitbox();
-        sprite.moves = true;
-
         return sprite;
     }
 }

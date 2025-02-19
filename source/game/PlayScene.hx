@@ -1,4 +1,4 @@
-package core.game;
+package game;
 
 class PlayScene extends MusicScene {
     public static var instance:PlayScene;

@@ -1,6 +1,6 @@
-package core.ui;
+package core;
 
-class MusicScene extends Scene {
+class MusicSubScene extends SubScene {
     function onMeasure() {}
     function onBeat() {}
     function onStep() {}

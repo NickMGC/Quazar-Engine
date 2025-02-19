@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 class TitleMenu extends MusicScene {
     var ngSpr:FlxSprite;
@@ -62,33 +62,33 @@ class TitleMenu extends MusicScene {
 		if (titleText.visible) return;
 
 		switch curBeat {
-			case 2:
+			case 1:
                 createText('quazar engine by', -90);
-			case 4:
+			case 3:
                 addText('nickngc\niccer');
-            case 5:
+            case 4:
                 deleteText();
-			case 6:
+			case 5:
                 createText('not associated\nwith', -140);
-			case 8:
+			case 7:
                 addText('newgrounds');
                 ngSpr.visible = true;
-            case 9:
+            case 8:
                 deleteText();
                 ngSpr.visible = false;
-			case 10:
+			case 9:
                 createText(randomPhrase[0], -90);
-			case 12:
+			case 11:
                 addText(randomPhrase[1]);
-            case 13:
+            case 12:
                 deleteText();
-			case 14:
+			case 13:
                 createText('friday', -90);
-			case 15:
+			case 14:
                 addText('night');
-			case 16:
+			case 15:
                 addText('funkin');
-			case 17:
+			case 16:
                 onAccept();
 		}
     }

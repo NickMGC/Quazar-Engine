@@ -1,4 +1,4 @@
-package core.ui;
+package;
 
 class SubScene extends FlxSubState {
     var storedControls:Map<String, Map<Int, Array<Void -> Void>>> = [];

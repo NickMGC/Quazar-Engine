@@ -11,23 +11,21 @@ import core.Settings;
 
 
 //Handlers
-import tools.SpriteHandler.*;
+import tools.CreateTools.*;
 using tools.SpriteHandler;
 
 import tools.*;
 
 //Core
 import core.Chart;
-
 import core.*;
-import core.ui.*;
 
 //Controls
 import core.Controls;
 
 import tools.Binds as Key;
 
-import core.game.*;
+import game.*;
 
 //Objects
 import objects.*;
@@ -36,8 +34,7 @@ import objects.core.*;
 import objects.Option;
 import objects.Option.OptionCategory;
 
-import states.*;
-import substates.*;
+import menus.*;
 
 
 //Flixel

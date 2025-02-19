@@ -1,6 +1,6 @@
-package core.game;
+package game;
 
-import core.game.PlayScene.instance as game;
+import game.PlayScene.instance as game;
 
 class PlayerControls {
     public static function init() {

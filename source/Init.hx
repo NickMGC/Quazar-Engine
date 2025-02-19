@@ -38,7 +38,7 @@ class Init extends flixel.FlxState {
 
 		#if (allow_video && hxvlc) hxvlc.util.Handle.initAsync(isInit); #end
 
-		switchState(states.TitleMenu.new);
+		switchState(menus.TitleMenu.new);
 
 		super.create();
 	}

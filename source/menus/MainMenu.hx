@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 class MainMenu extends Scene {
     static var curSelected:Int = 0;
@@ -20,6 +20,8 @@ class MainMenu extends Scene {
             for (anim in ['idle', 'selected']) menuItems[i].addPrefix(anim, '${item.name} ${anim}0');
             add(menuItems[i]);
         }
+
+        Key.onPress(Key.back, () -> switchState(BPMTestMenu.new));
 
         initControls();
         changeItem();

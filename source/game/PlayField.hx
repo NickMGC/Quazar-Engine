@@ -1,4 +1,4 @@
-package core.game;
+package game;
 
 class PlayField extends FlxContainer {
     public var playerStrums:StrumLine;

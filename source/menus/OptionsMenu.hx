@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 class OptionsMenu extends Scene {
     static var curOption:Option;

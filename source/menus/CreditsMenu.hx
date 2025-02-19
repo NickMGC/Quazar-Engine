@@ -1,4 +1,4 @@
-package states;
+package menus;
 
 class CreditsMenu extends Scene {
     static var curSelected:Int = 0;
