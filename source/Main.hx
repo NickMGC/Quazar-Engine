@@ -4,7 +4,7 @@ import openfl.display.DisplayObject;
 
 class Main extends flixel.FlxGame {
 	public function new() {
-		final fps:Int = Std.int(FlxG.stage.application.window.displayMode.refreshRate * 2);
+		final fps:Int = 60;
 
 		super(1280, 720, Init, fps, fps, true, false);
 	}
