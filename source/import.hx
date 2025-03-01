@@ -11,7 +11,7 @@ import core.Settings;
 
 
 //Handlers
-import tools.CreateTools.*;
+import tools.CreateTools;
 using tools.SpriteHandler;
 
 import tools.*;
@@ -23,7 +23,7 @@ import core.*;
 //Controls
 import core.Controls;
 
-import tools.Binds as Key;
+import tools.Key;
 
 import game.*;
 

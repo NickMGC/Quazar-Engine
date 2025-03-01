@@ -21,10 +21,11 @@ class FPS extends TextField {
 
 		selectable = mouseEnabled = false;
 		multiline = true;
+
 		autoSize = LEFT;
 	}
 
-	override function __enterFrame(deltaTime:Float) {
+	override function __enterFrame(deltaTime:Float):Void {
 		if (deltaTimeout < 100) {
 			deltaTimeout += deltaTime;
 			return;

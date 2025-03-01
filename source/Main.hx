@@ -1,17 +1,23 @@
 package;
 
-import openfl.display.DisplayObject;
+import openfl.display.DisplayObject as Obj;
 
-class Main extends flixel.FlxGame {
+class Main extends FlxGame {
 	public function new() {
-		final fps:Int = Std.int(FlxG.stage.application.window.displayMode.refreshRate * 2);
-
-		super(1280, 720, Init, fps, fps, true, false);
+		super(1280, 720, Init, Data.framerate, Data.framerate, true, false);
 	}
 
 	#if !debug
-	@:noCompletion override function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject) return false;
-    @:noCompletion override function __hitTestHitArea(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject) return false;
-    @:noCompletion override function __hitTestMask(x:Float, y:Float) return false;
+	override function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<Obj>, interactiveOnly:Bool, hitObject:Obj) {
+		return false;
+	}
+
+    override function __hitTestHitArea(x:Float, y:Float, shapeFlag:Bool, stack:Array<Obj>, interactiveOnly:Bool, hitObject:Obj) {
+		return false;
+	}
+
+    override function __hitTestMask(x:Float, y:Float) {
+		return false;
+	}
 	#end
 }

@@ -1,68 +1,67 @@
 package game;
 
 class PlayScene extends MusicScene {
-    public static var instance:PlayScene;
-    public var paused:Bool = false;
+	public static var self:PlayScene;
+	public var paused:Bool = false;
 
 	public var camGame:FlxCamera = new FlxCamera();
 	public var camHUD:FlxCamera = new FlxCamera();
 	public var camOther:FlxCamera = new FlxCamera();
 
-    public var inst:FlxSound;
+	public var inst:FlxSound;
 	public var vocals:FlxSound;
 	public var vocalsOpponent:FlxSound;
 
-    public var playField:PlayField;
+	public var playField:PlayField;
 
-    override function create() {
-        instance = this;
+	override function create():Void {
+		self = this;
 
-        bgColor = 0xFF999999;
+		bgColor = 0xFF999999;
 
-        for (cam in [camGame, camHUD, camOther]) FlxG.cameras.add(cam, false).bgColor = 0x00000000;
+		for (cam in [camGame, camHUD, camOther]) FlxG.cameras.add(cam, false).bgColor = 0x00000000;
+		
+		add(playField = new PlayField(camHUD));
 
-        Music.stop();
-        
-        add(playField = new PlayField());
-        playField.camera = camHUD;
+		Key.onPress(Key.accept, onAccept);
 
-        PlayerControls.init();
+		super.create();
+	}
 
-        super.create();
-    }
+	inline function onAccept():Void {
+		openSubState(new PauseMenu());
+	}
 
-    override function openSubState(SubState:FlxSubState) {
+	override function openSubState(SubState:FlxSubState):Void {
 		super.openSubState(SubState);
 
-        if (!paused) return;
+		if (!paused) return;
+		for (sound in [inst, vocals, vocalsOpponent]) sound?.pause();
 
-        for (sound in [inst, vocals, vocalsOpponent]) sound?.pause();
+		FlxTimer.globalManager.forEach(pauseTmr);
+		FlxTween.globalManager.forEach(pauseTwn);
 
-        FlxTimer.globalManager.forEach(pauseTmr);
-        FlxTween.globalManager.forEach(pauseTwn);
-
-        FlxG.camera.followLerp = 0;
-        paused = Conductor.paused = true;
-        persistentUpdate = false;
+		FlxG.camera.followLerp = 0;
+		paused = conductor.paused = true;
+		persistentUpdate = false;
 	}
 
-	override function closeSubState() {
+	override function closeSubState():Void {
 		super.closeSubState();
 
-        if (!paused) return;
+		if (!paused) return;
+		for (sound in [inst, vocals, vocalsOpponent]) sound?.resume();
 
-        for (sound in [inst, vocals, vocalsOpponent]) sound?.resume();
+		FlxTimer.globalManager.forEach(resumeTmr);
+		FlxTween.globalManager.forEach(resumeTwn);
 
-        FlxTimer.globalManager.forEach(resumeTmr);
-        FlxTween.globalManager.forEach(resumeTwn);
-
-        paused = Conductor.paused = false;
-        persistentUpdate = true;
+		paused = conductor.paused = false;
+		persistentUpdate = true;
 	}
 
-    function pauseTmr(tmr:FlxTimer) if (!tmr.finished) tmr.active = false;
-    function resumeTmr(tmr:FlxTimer) if (!tmr.finished) tmr.active = true;
+	function pauseTmr(tmr:FlxTimer):Void if (!tmr.finished) tmr.active = false;
+	function resumeTmr(tmr:FlxTimer):Void if (!tmr.finished) tmr.active = true;
 
-    function pauseTwn(twn:FlxTween) if (!twn.finished) twn.active = false;
-    function resumeTwn(twn:FlxTween) if (!twn.finished) twn.active = true;
+	function pauseTwn(twn:FlxTween):Void if (!twn.finished) twn.active = false;
+	function resumeTwn(twn:FlxTween):Void if (!twn.finished) twn.active = true;
 }

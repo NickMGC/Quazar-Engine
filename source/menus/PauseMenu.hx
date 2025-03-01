@@ -1,6 +1,6 @@
 package menus;
 
-import game.PlayScene.instance as game;
+import game.PlayScene.self as game;
 
 class PauseMenu extends SubScene {
 	var textItems:Array<Alphabet> = [];

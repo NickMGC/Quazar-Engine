@@ -1,6 +1,7 @@
 ### VS Code
 export/*
 
+setLibs.bat
 .vscode/*
 .haxelib/
 .github/

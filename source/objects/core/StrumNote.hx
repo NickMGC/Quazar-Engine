@@ -1,15 +1,15 @@
 package objects.core;
 
 class StrumNote extends NoteSprite {
-    public var index:Int = 0;
-    public var line:StrumLine;
+	public var line:StrumLine;
+	public var index:Int = 0;
 
-    public function new(index:Int = 0, line:StrumLine) {
-        super(index);
+	public function new(line:StrumLine, index:Int = 0) {
+		super(index);
 
-        this.index = index;
-        this.line = line;
+		this.line = line;
+		this.index = index;
 
-        this.playAnim('static').updateHitbox();
-    }
+		this.playAnim('static').updateHitbox();
+	}
 }

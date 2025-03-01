@@ -1,100 +1,109 @@
 package menus;
 
 class CreditsMenu extends Scene {
-    static var curSelected:Int = 0;
-    static var curDev:Credit;
+	static var curSelected:Int = 0;
 
-    static final categories:Array<CreditCat> = [
-        CreditCategory('Quazar Engine Developers', [
-            createDev('NickNGC', 'Owner, Programmer, Artist, Composer', 'nickngc'),
-            createDev('Iccer', 'Artist', 'iccerdraws')
-        ]),
-        CreditCategory("Funkin' Crew", [
-            createDev('Phantom Arcade', 'Director, Artist', 'PhantomArcade3K'),
-            createDev('ninjamuffin99', 'Co-Director, Programmer', 'ninja_muffin99'),
-            createDev('Kawai Sprite', 'Musician', 'kawaisprite'),
-            createDev('evilsk8r', 'Artist', 'evilsk8r')
-        ])
-    ];
+	static final categories:Array<CreditCategory> = [
+		new CreditCategory('Quazar Engine Developers', [
+			Credit.make('NickNGC', 'Owner, Programmer, Artist, Composer', 'x.com/nickngc'),
+			Credit.make('Iccer', 'Artist', 'x.com/iccerdraws')
+		]),
+		new CreditCategory("Funkin' Crew", [
+			Credit.make('Phantom Arcade', 'Director, Artist', 'x.com/PhantomArcade3K'),
+			Credit.make('ninjamuffin99', 'Co-Director, Programmer', 'x.com/ninja_muffin99'),
+			Credit.make('Kawai Sprite', 'Musician', 'x.com/kawaisprite'),
+			Credit.make('evilsk8r', 'Artist', 'x.com/evilsk8r')
+		])
+	];
 
-    var devs:Array<Credit> = [];
-    var devsText:Array<Alphabet> = [];
-    var desc:Alphabet;
+	var credits:Array<Credit> = [];
+	var desc:Alphabet;
 
-    var curY:Float = 60;
+	var curY:Float = 60;
 
-    override function create() {
-        add(Sprite('menuDesat').setColor(0xFFea71fd));
+	override function create() {
+		add(Sprite('ui/menuDesat').setColor(0xFFea71fd));
 
-        for (category in categories) {
-            createTitle(category.name);
-            createCredits(category.credits);
-        }
+		for (category in categories) createCategory(category);
 
-        add(desc = new Alphabet(30, 650, '', 0.7, false));
+		add(desc = new Alphabet(30, 650, '', 0.7, false));
 
-        initControls();
-        changeItem();
+		initControls();
+		changeItem();
 
-        super.create();
-    }
+		super.create();
+	}
 
-    inline function onAccept() FlxG.openURL('x.com/${curDev.link}');
+	inline function onAccept() FlxG.openURL(credits[curSelected].data.link);
 
-    function onBack() {
-        Controls.block = true;
-        Sound.play('cancel', 0.6);
-        switchState(MainMenu.new);
-    }
+	function onBack() {
+		Controls.block = true;
+		Sound.play('cancel', 0.6);
+		switchState(MainMenu.new);
+	}
 
-    inline function onUp() changeItem(-1);
-    inline function onDown() changeItem(1);
+	function createCategory(category:CreditCategory) {
+		final title = new Alphabet(90, curY, category.name, 0.8, true);
+		add(title);
+		add(Graphic(Std.int(109 + title.width), curY + 20, Std.int(1190 - (108 + title.width)), 4, FlxColor.BLACK));
 
-    function createTitle(name:String) {
-        final title = new Alphabet(90, curY, name, 0.8, true);
-        add(title);
+		curY += 50;
 
-        add(Graphic(Std.int(109 + title.width), curY + 20, Std.int(1190 - (108 + title.width)), 4, FlxColor.BLACK));
+		for (credit in category.credits) {
+			credits.push(new Credit(credit, curY += 50));
+			add(credits[credits.length - 1]);
+		}
+		
+		curY += 110;
+	}
 
-        curY += 50;
-    }
+	function changeItem(dir:Int = 0) {
+		if (dir != 0) Sound.play('scroll', 0.4);
 
-    function createCredits(credits:Array<Credit>) {
-        for (credit in credits) {
-            devs.push(credit);
-            curY += 50;
+		curSelected = (curSelected + dir + credits.length) % credits.length;
+		desc.text = credits[curSelected].data.desc;
 
-            final dev = new Alphabet(135, curY, credit.name, 0.7, false);
-            add(dev);
-            devsText.push(dev);
+		for (i => credit in credits) credit.text.alpha = i == curSelected ? 1 : 0.6;
+	}
 
-            add(Sparrow('credits/credits', 145 + dev.width, curY - 5).addPrefix(credit.name, credit.name, 0, false).playAnim(credit.name));
-        }
+	function initControls() {
+		Key.onPress(Key.accept, onAccept);
+		Key.onPress(Key.back, onBack);
 
-        curY += 90;
-    }
+		Key.onPress(Key.up, onUp);
+		Key.onPress(Key.down, onDown);
+	}
 
-    function changeItem(dir:Int = 0) {
-        if (dir != 0) Sound.play('scroll', 0.4);
-        curSelected = (curSelected + dir + devs.length) % devs.length;
-
-        curDev = devs[curSelected];
-        desc.text = curDev.desc;
-
-        for (i => credit in devsText) credit.alpha = i == curSelected ? 1 : 0.6;
-    }
-
-    private static function CreditCategory(name:String, credits:Array<Credit>):CreditCat return {name: name, credits: credits};
-    private static function createDev(name:String, desc:String, link:String):Credit return {name: name, desc: desc, link: link};
-
-    function initControls() {
-        Key.onPress(Key.accept, onAccept);
-        Key.onPress(Key.back, onBack);
-
-        Key.onPress(Key.up, onUp);
-        Key.onPress(Key.down, onDown);
-    }
+	inline function onUp() changeItem(-1);
+	inline function onDown() changeItem(1);
 }
 
-typedef CreditCat = {name:String, credits:Array<Credit>}
-typedef Credit = {name:String, desc:String, link:String}
+class Credit extends FlxSpriteGroup {
+	public var data:CreditData;
+	public var text:Alphabet;
+
+	public function new(data:CreditData, y:Float = 0) {
+		super(0, y);
+
+		this.data = data;
+
+		add(text = new Alphabet(135, 0, data.name, 0.7, false));
+		add(Sparrow('ui/credits/icons', 145 + text.width, -5).addPrefix(data.name, data.name, 0, false).playAnim(data.name));
+	}
+
+	public static function make(name:String, desc:String, link:String):CreditData {
+		return {name: name, desc: desc, link: link};
+	}
+}
+
+class CreditCategory {
+	public var name:String;
+	public var credits:Array<CreditData>;
+
+	public function new(name:String, credits:Array<CreditData>) {
+		this.name = name;
+		this.credits = credits;
+	}
+}
+
+typedef CreditData = {name:String, desc:String, link:String}

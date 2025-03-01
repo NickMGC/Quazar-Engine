@@ -3,60 +3,97 @@ package core;
 import openfl.events.KeyboardEvent;
 
 class Controls {
-    @:noCompletion public static var callbacks:Map<String, Map<Int, Array<Void -> Void>>> = ['press' => [], 'hold' => [], 'release' => []];
-    @:noCompletion public static var justPressedKeys:Map<Int, Bool> = [];
+	@:noCompletion public static var callbacks:Map<String, Map<Int, Array<Void -> Void>>> = [
+		'press' => [],
+		'hold' => [],
+		'release' => []
+	];
 
-    public static var block:Bool = true;
+	@:noCompletion public static var justPressedKeys:Map<Int, Bool> = [];
 
-    public static function init() {
-        FlxG.signals.preStateSwitch.add(reset); 
+	/**
+	 * Whether input is blocked or not.
+	 */
+	public static var block:Bool = true;
 
-        FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
-        FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
-    }
+	public static function init():Void {
+		FlxG.signals.preStateSwitch.add(reset); 
 
-    static function reset() {
-        for (type in ['press', 'hold', 'release']) for (key in callbacks[type].keys()) callbacks[type][key] = [];
-        justPressedKeys.clear();
-    }
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+	}
 
-    static function keyPressed(event:KeyboardEvent) {
-        if (block) return;
+	@:noCompletion static function onKeyPress(event:KeyboardEvent):Void {
+		if (block) return;
 
-        checkKeyPress(event.keyCode);
-        checkKey(event.keyCode, 'hold');
-    }
+		handleKeyPress(event.keyCode);
+		handleKeyEvent(event.keyCode, 'hold');
+	}
 
-    static function keyReleased(event:KeyboardEvent) {
-        justPressedKeys[event.keyCode] = false;
-        if (block) return;
+	@:noCompletion static function onKeyRelease(event:KeyboardEvent):Void {
+		justPressedKeys[event.keyCode] = false;
 
-        checkKey(event.keyCode, 'release');
-    }
+		if (!block) {
+			handleKeyEvent(event.keyCode, 'release');
+		}
+	}
 
-    private static function checkKeyPress(key:Int) {
-        checkFullscreen(key);
+	/**
+	 * Checks if a key was pressed and triggers its associated callbacks.
+	 */
+	@:noCompletion static function handleKeyPress(keyCode:Int):Void {
+		toggleFullscreen(keyCode);
 
-        if (!callbacks['press'].exists(key) || justPressedKeys[key]) return;
+		if (!callbacks['press'].exists(keyCode) || justPressedKeys[keyCode]) return;
 
-        for (callback in callbacks['press'][key]) callback();
-        justPressedKeys[key] = true;
-    }
+		for (callback in callbacks['press'][keyCode]) {
+			callback();
+		}
 
-    private static function checkKey(key:Int, type:String) {
-        if (!callbacks[type].exists(key)) return;
-        for (callback in callbacks[type][key]) callback();
-    }
+		justPressedKeys[keyCode] = true;
+	}
 
-    private static function checkFullscreen(key:Int) {
-        if (key != 122) return;
+	/**
+	 * Triggers callbacks for a specific key.
+	 */
+	@:noCompletion static function handleKeyEvent(keyCode:Int, eventType:String):Void {
+		if (callbacks[eventType].exists(keyCode)) {
+			for (callback in callbacks[eventType][keyCode]) {
+				callback();
+			}
+		}
+	}
 
-        FlxG.fullscreen = !FlxG.fullscreen;
-        if (FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
-    }
+	@:noCompletion private static function toggleFullscreen(keyCode:Int):Void {
+		if (keyCode != 122) return;
 
-    @:noCompletion public static function bind(type:String, keys:Array<Int>, callback:Void -> Void) for (key in keys) {
-        if (!callbacks[type].exists(key)) callbacks[type][key] = [];
-        callbacks[type][key].push(callback);
-    }
+		FlxG.fullscreen = !FlxG.fullscreen;
+
+		if (FlxG.save.data != null) {
+			FlxG.save.data.fullscreen = FlxG.fullscreen;
+		}
+	}
+
+	/**
+	 * Binds a callback to a specified key.
+	 */
+	@:noCompletion public static function bind(type:String, keys:Array<Int>, callback:Void -> Void):Void {
+		for (key in keys) {
+			if (!callbacks[type].exists(key)) {
+				callbacks[type][key] = [];
+			}
+
+			callbacks[type][key].push(callback);
+		}
+	}
+
+	static function reset():Void {
+		for (type in ['press', 'hold', 'release']) {
+			for (key in callbacks[type].keys()) {
+				callbacks[type][key] = [];
+			}
+		}
+
+		justPressedKeys.clear();
+	}
 }

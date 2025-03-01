@@ -1,7 +1,7 @@
 package;
 
 class Scene extends FlxState {
-	override function create() {
+	override function create():Void {
 		persistentUpdate = persistentDraw = true;
 
 		super.create();
@@ -20,7 +20,7 @@ class Scene extends FlxState {
 		Path.clearUnusedMemory();
 	}
 
-	override function startOutro(onOutroComplete:Void -> Void) {
+	override function startOutro(onOutroComplete:Void -> Void):Void {
 		if (skipNextTransIn) {
 			skipNextTransIn = false;
 			return super.startOutro(onOutroComplete);
@@ -37,22 +37,28 @@ class Transition extends FlxBackdrop {
 	public var finish:Void -> Void;
 
 	public function new(?transIn:Bool = false) {
-		super(Path.image('ui/transition'), Y);
+		camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
 
-		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		super(Path.image('ui/transition'), Y);
 
 		this.setScale(scale.x / camera.zoom, scale.y / camera.zoom).setScrollFactor();
 
 		final center:Float = (FlxG.width - width) / 2;
 		final offscreen:Float = width / camera.zoom;
 
-		FlxTween.num(transIn ? offscreen : center, transIn ? center : -offscreen, 0.3, {
-			ease: transIn ? FlxEase.circIn : FlxEase.circOut,
-			onComplete: onFinish,
-			startDelay: transIn ? 0 : 0.15
-		}, move);
+		var target:TargetInfo;
+		target = transIn ? {from: offscreen, to: center, ease: FlxEase.circIn, delay: 0} : {from: center, to: -offscreen, ease: FlxEase.circOut, delay: 0.15};
+
+		FlxTween.num(target.from, target.to, 0.3, {ease: target.ease, onComplete: onFinish, startDelay: target.delay}, move);
 	}
 
-	inline function move(value:Float) x = value;
-	inline function onFinish(_:FlxTween) finish();
+	inline function move(value:Float):Void {
+		x = value;
+	}
+
+	inline function onFinish(_:FlxTween):Void {
+		finish();
+	}
 }
+
+typedef TargetInfo = {from:Float, to:Float, ease:Float -> Float, delay:Float};

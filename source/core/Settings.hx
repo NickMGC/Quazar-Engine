@@ -33,6 +33,7 @@ import flixel.input.keyboard.FlxKey;
 	public static var offset:Int = 0;
 
 	//Graphics
+	public static var framerate:Int = 60;
 	public static var antialiasing:Bool = true;
 	public static var gpuRendering:Bool = true;
 	public static var shaders:Bool = true;
@@ -40,7 +41,7 @@ import flixel.input.keyboard.FlxKey;
 }
 
 class Settings {
-	inline public static function resetKeys()
+	inline public static function resetKeys():Void {
 		Data.keyBinds = [
 			'left_note' => [LEFT, A],
 			'down_note' => [DOWN, S],
@@ -57,8 +58,9 @@ class Settings {
 			'pause' => [ENTER, ESCAPE],
 			'reset' => [R, NONE]
 		];
+	}
 
-	public static function save() {
+	public static function save():Void {
 		for (key in Type.getClassFields(Data)) Reflect.setField(FlxG.save.data, key, Reflect.field(Data, key));
 		FlxG.save.flush();
 
@@ -68,9 +70,7 @@ class Settings {
 		trace('Settings saved');
 	}
 
-	public static function set(o:Dynamic, field:String, value:Dynamic) Reflect.setField(o, field, value);
-
-	public static function load() {
+	public static function load():Void {
 		for (key in Type.getClassFields(Data)) if (Reflect.hasField(FlxG.save.data, key)) Reflect.setField(Data, key, Reflect.field(FlxG.save.data, key));
 
 		FlxSprite.defaultAntialiasing = Data.antialiasing;

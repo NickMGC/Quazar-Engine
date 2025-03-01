@@ -1,29 +1,35 @@
 package;
 
+import lime.app.Application;
+
+import openfl.events.UncaughtErrorEvent;
 import openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR as ERROR;
+import openfl.Lib;
 
 import haxe.CallStack;
 
-class Init extends flixel.FlxState {
+#if (allow_video && hxvlc)
+import hxvlc.util.Handle.initAsync;
+#end
+
+class Init extends FlxState {
 	public static var fpsCounter:FPS;
 
-	override function create() {
-		@:privateAccess FlxG.save.bind('QuazarEngine', '${FlxG.stage.application.meta.get('company')}/${flixel.util.FlxSave.validate(FlxG.stage.application.meta.get('file'))}');
+	override function create():Void {
+		@:privateAccess FlxG.save.bind('QuazarEngine', '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}');
 
 		@:functionCode("#include <windows.h>\nsetProcessDPIAware()")
 
-		openfl.Lib.current.stage.align = 'tl';
-		openfl.Lib.current.stage.scaleMode = NO_SCALE;
+		Lib.current.stage.align = 'tl';
+		Lib.current.stage.scaleMode = NO_SCALE;
 
-		openfl.Lib.current.stage.application.window.onClose.add(Settings.save);
-		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(ERROR, onError);
+		Lib.current.stage.application.window.onClose.add(Settings.save);
+		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(ERROR, onError);
 
 		FlxG.game.addChild(fpsCounter = new FPS());
 
 		Controls.init();
 		Settings.load();
-
-		FlxG.plugins.addPlugin(new Conductor());
 
 		FlxG.fixedTimestep = false;
 		FlxG.mouse.useSystemCursor = true;
@@ -36,29 +42,30 @@ class Init extends flixel.FlxState {
 		FlxObject.defaultMoves = false;
 		FlxSprite.defaultAntialiasing = Data.antialiasing;
 
-		#if (allow_video && hxvlc) hxvlc.util.Handle.initAsync(isInit); #end
+		#if (allow_video && hxvlc) initAsync(checkStatus); #end
 
-		switchState(menus.TitleMenu.new);
+		switchState(TitleMenu.new);
 
 		super.create();
 	}
 
-	function isInit(s:Bool) {
-		trace('We got ${s ? '' : 'no '}async video loading');
+	function checkStatus(enabled:Bool):Void {
+		trace('Async video loading is currently ${enabled ? 'on' : 'off'}.');
 	}
 
-	function onError(e:openfl.events.UncaughtErrorEvent) {
-		var errMsg:String = '';
+	function onError(e:UncaughtErrorEvent):Void {
+		var errorMessage:String = '';
 
 		for (item in CallStack.exceptionStack(true)) {
 			switch item {
-				case FilePos(s, file, line, column): errMsg += '$file: $line\n';
+				case FilePos(s, file, line, column): errorMessage += '$file: $line\n';
 				default: Sys.println(item);
 			}
 		}
 
-		lime.app.Application.current.window.alert(errMsg += '\n${e.error}', "Error");
-		trace(errMsg += '\n${e.error}');
+		Application.current.window.alert(errorMessage += '\n${e.error}', "Error");
+		trace(errorMessage += '\n${e.error}');
+
 		Sys.exit(1);
 	}
 }
