@@ -61,4 +61,4 @@ class Transition extends FlxBackdrop {
 	}
 }
 
-typedef TargetInfo = {from:Float, to:Float, ease:Float -> Float, delay:Float};
+typedef TargetInfo = {from:Float, to:Float, ease:Float -> Float, delay:Float}
