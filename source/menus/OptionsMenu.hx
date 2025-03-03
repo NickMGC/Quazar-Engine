@@ -4,20 +4,19 @@ class OptionsMenu extends Scene {
 	static var curOption:Option;
 	static var curSelected:Int = 0;
 
-	static var categories:Array<OptionCategory> = [
+	var categories:Array<OptionCategory> = [
 		new OptionCategory('Gameplay Settings', [
 			Option.bool('Downscroll', 'Changes your note direction from up to down.', Data.downScroll, v -> Data.downScroll = v),
 			Option.bool('Middlescroll', "Puts player's notes in the centre.", Data.middleScroll, v -> Data.middleScroll = v),
 			Option.bool('Ghost Tapping', "Tapping won't cause a miss when there's no notes to be hit.", Data.ghostTapping, v -> Data.ghostTapping = v),
 			Option.bool('Flashing Lights', "Includes flashing lights during some in-game moments.", Data.flashingLights, v -> Data.flashingLights = v),
 			Option.bool('Reset Character', "Determines whether the character should reset or not.", Data.reset, v -> Data.reset = v),
-			Option.float('Safe frames', 'Adjusts how strict the timing window is for hitting notes.', Data.safeFrames, v -> Data.safeFrames = v, 0.1, 2, 2, 10),
+			Option.float('Safe frames', 'Adjusts how strict the timing window is for hitting notes.', Data.safeFrames, v -> Data.safeFrames = v).bound(2, 10),
 			Option.state('Change Controls...', '', ControlsMenu.new),
 			Option.state('Change Delay...', '', DelayMenu.new)
 		]),
 		new OptionCategory('Graphics Settings', [
 			//Option.add('Screen Resolution', "Choose a desired screen resolution.", Data.screenRes, ['1920×1080', '1600×900', '1366×768', '1280x720', '1152×648', '1024×576'], v -> Data.screenRes = v),
-			//Option.add('Double Framerate', "Whether the framerate gets doubled or not. Useful for precision.", Data.doubleFPS, v -> Data.doubleFPSs = v),
 			Option.int('Framerate', "Choose the desired framerate. It's best if you set it to your monitor's refresh rate.", Data.framerate, v -> {
 				if(v > FlxG.drawFramerate) {
 					FlxG.updateFramerate = v;
@@ -28,7 +27,7 @@ class OptionsMenu extends Scene {
 				}
 
 				Data.framerate = v;
-			}, 1, 30, 500),
+			}).bound(30, 500),
 			Option.bool('Anti-Aliasing', 'Anti-Aliasing is used to make graphics look less pixelated.', Data.antialiasing, v -> Data.antialiasing = v),
 			Option.bool('GPU Rendering', 'Puts the workload on the GPU when rendering graphics.', Data.gpuRendering, v -> Data.gpuRendering = v),
 			Option.bool('Shaders', 'Shaders are used for various visual effects.', Data.shaders, v -> Data.shaders = v),
@@ -76,10 +75,12 @@ class OptionsMenu extends Scene {
 	}
 
 	function onBack() {
-		Sound.play('cancel', 0.6);
-
 		Controls.block = true;
+
+		Settings.save();
 		switchState(MainMenu.new);
+
+		Sound.play('cancel', 0.6);
 	}
 
 	private function createCategory(category:OptionCategory, index:Int) {
@@ -139,8 +140,6 @@ class OptionsMenu extends Scene {
 
 	override function destroy() {
 		super.destroy();
-
-		Settings.save();
 		Settings.load();
 	}
 

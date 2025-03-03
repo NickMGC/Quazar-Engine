@@ -4,7 +4,7 @@ import openfl.display.DisplayObject as Obj;
 
 class Main extends FlxGame {
 	public function new() {
-		super(1280, 720, Init, Data.framerate, Data.framerate, true, false);
+		super(1280, 720, Init, 60, 60, true, false);
 	}
 
 	#if !debug

@@ -92,10 +92,16 @@ class ControlsMenu extends Scene {
 		if (binding) return;
 
 		Controls.block = true;
+
 		Settings.save();
-		Settings.load();
 		switchState(OptionsMenu.new);
+
 		Sound.play('cancel', 0.6);
+	}
+
+	override function destroy() {
+		super.destroy();
+		Settings.load();
 	}
 
 	inline function onUp() changeItem(-1);
@@ -149,7 +155,7 @@ class ControlsMenu extends Scene {
 	}
 
 	function resetControls() {
-		Settings.resetKeys();
+		Data.keyBinds = DefaultData.keyBinds;
 
 		for (key in keyGroup) {
 			if (key == null) return;

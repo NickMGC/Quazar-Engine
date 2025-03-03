@@ -8,6 +8,8 @@ import flxanimate.*;
 //Backend
 import core.Path;
 import core.Settings;
+import core.Settings.Data;
+import core.Settings.DefaultData;
 
 
 //Handlers
@@ -31,8 +33,8 @@ import game.*;
 import objects.*;
 import objects.core.*;
 
-import objects.Option;
-import objects.Option.OptionCategory;
+import objects.options.Option;
+import objects.options.Option.OptionCategory;
 
 import menus.*;
 

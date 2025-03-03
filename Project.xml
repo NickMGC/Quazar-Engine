@@ -2,7 +2,7 @@
 <project>
 	<!-- App Settings -->
 
-	<app title="FNF: Quazar Engine" file="QuazarEngine" packageName="com.nickngc.quazarengine" package="com.nickngc.quazarengine" main="Main" version="0.0.1" company="NickNGC"/>
+	<app title="FNF: Quazar Engine" file="QuazarEngine" main="Main" version="0.0.1" company="NickNGC"/>
 
 	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" orientation="landscape" fullscreen="false" resizable="true" antialiasing="0" allow-high-dpi="true"/>
 

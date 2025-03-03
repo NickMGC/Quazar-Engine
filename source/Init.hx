@@ -16,7 +16,8 @@ class Init extends FlxState {
 	public static var fpsCounter:FPS;
 
 	override function create():Void {
-		@:privateAccess FlxG.save.bind('QuazarEngine', '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}');
+		Controls.init();
+		Settings.load();
 
 		@:functionCode("#include <windows.h>\nsetProcessDPIAware()")
 
@@ -27,9 +28,6 @@ class Init extends FlxState {
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(ERROR, onError);
 
 		FlxG.game.addChild(fpsCounter = new FPS());
-
-		Controls.init();
-		Settings.load();
 
 		FlxG.fixedTimestep = false;
 		FlxG.mouse.useSystemCursor = true;

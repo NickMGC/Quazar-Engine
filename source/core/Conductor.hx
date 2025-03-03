@@ -22,7 +22,7 @@ class Conductor extends FlxBasic {
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 
-		if (paused) return;
+		if (paused || !song?.playing) return;
 
 		updateTime(elapsed);
 		updateTimings();
@@ -36,7 +36,7 @@ class Conductor extends FlxBasic {
 		}
 	}
 
-	function updateTimings():Void {
+	inline function updateTimings():Void {
 		for (timing in [measure, beat, step]) {
 			timing.update(time, bpm);
 		}
@@ -55,15 +55,15 @@ class Timing {
 
 	public var multiplier:Float;
 
-	public function new(multiplier:Float) {
+	inline public function new(multiplier:Float) {
 		this.multiplier = multiplier;
 	}
 
 	public function update(time:Float, bpm:Float):Void {
-		while ((time + Data.offset) >= tracker) {
-			cur++;
-			signal.dispatch();
-			tracker += (60000 / bpm) * multiplier;
-		}
+		while ((time + Data.offset) < tracker) return;
+		
+		cur++;
+		signal.dispatch();
+		tracker += (60000 / bpm) * multiplier;
 	}
 }
